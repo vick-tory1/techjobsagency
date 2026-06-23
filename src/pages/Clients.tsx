@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
@@ -15,11 +15,23 @@ export default function Clients() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("Active");
 
-  const [clientList, setClientList] =
-    useState<Client[]>(initialClients);
+  const [message, setMessage] = useState("");
 
-  const [message, setMessage] =
-    useState("");
+  const [clientList, setClientList] = useState<Client[]>(() => {
+    const savedClients =
+      localStorage.getItem("flowpilot-clients");
+
+    return savedClients
+      ? JSON.parse(savedClients)
+      : initialClients;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      "flowpilot-clients",
+      JSON.stringify(clientList)
+    );
+  }, [clientList]);
 
   const filteredClients = useMemo(() => {
     return clientList.filter((client) =>
