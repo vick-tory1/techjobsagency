@@ -80,6 +80,26 @@ export default function Clients() {
     );
   };
 
+  const handleDeleteClient = (
+    clientId: string
+  ) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this client?"
+    );
+
+    if (!confirmed) return;
+
+    setClientList((prev) =>
+      prev.filter(
+        (client) => client.id !== clientId
+      )
+    );
+
+    setMessage(
+      "Client deleted successfully."
+    );
+  };
+
   return (
     <>
       <main className="p-8">
@@ -128,6 +148,10 @@ export default function Clients() {
                 <th className="p-4 text-left">
                   Status
                 </th>
+
+                <th className="p-4 text-left">
+                  Actions
+                </th>
               </tr>
             </thead>
 
@@ -135,7 +159,7 @@ export default function Clients() {
               {filteredClients.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={4}
+                    colSpan={5}
                     className="p-8 text-center text-slate-500"
                   >
                     No clients found.
@@ -161,6 +185,19 @@ export default function Clients() {
 
                     <td className="p-4">
                       {client.status}
+                    </td>
+
+                    <td className="p-4">
+                      <Button
+                        variant="danger"
+                        onClick={() =>
+                          handleDeleteClient(
+                            client.id
+                          )
+                        }
+                      >
+                        Delete
+                      </Button>
                     </td>
                   </tr>
                 ))
