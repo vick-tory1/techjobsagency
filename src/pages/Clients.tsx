@@ -1,11 +1,17 @@
 import { useMemo, useState } from "react";
-
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
+import Select from "../components/ui/Select";
 import { clients } from "../data/clients";
 
 export default function Clients() {
   const [search, setSearch] = useState("");
+const [isModalOpen, setIsModalOpen] = useState(false);
+
+const [name, setName] = useState("");
+const [company, setCompany] = useState("");
+const [email, setEmail] = useState("");
+const [status, setStatus] = useState("Active");
 
   const filteredClients = useMemo(() => {
     return clients.filter((client) =>
@@ -14,62 +20,133 @@ export default function Clients() {
   }, [search]);
 
   return (
-    <main className="p-8">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-4xl font-bold">
-          Clients
-        </h1>
+    <>
+      <main className="p-8">
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-4xl font-bold">
+            Clients
+          </h1>
 
-        <Button>
-          Add Client
-        </Button>
-      </div>
+          <Button
+            onClick={() => setIsModalOpen(true)}
+          >
+            Add Client
+          </Button>
+        </div>
 
-      <div className="mb-6 max-w-md">
+        <div className="mb-6 max-w-md">
+          <Input
+            value={search}
+            onChange={setSearch}
+            placeholder="Search clients..."
+          />
+        </div>
+
+        <div className="overflow-hidden rounded-xl border bg-white">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b bg-slate-50">
+                <th className="p-4 text-left">
+                  Name
+                </th>
+
+                <th className="p-4 text-left">
+                  Company
+                </th>
+
+                <th className="p-4 text-left">
+                  Email
+                </th>
+
+                <th className="p-4 text-left">
+                  Status
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {filteredClients.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="p-8 text-center text-slate-500"
+                  >
+                    No clients found.
+                  </td>
+                </tr>
+              ) : (
+                filteredClients.map((client) => (
+                  <tr
+                    key={client.id}
+                    className="border-b"
+                  >
+                    <td className="p-4">
+                      {client.name}
+                    </td>
+
+                    <td className="p-4">
+                      {client.company}
+                    </td>
+
+                    <td className="p-4">
+                      {client.email}
+                    </td>
+
+                    <td className="p-4">
+                      {client.status}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </main>
+
+      {isModalOpen && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-4">
+    <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
+      <h2 className="mb-6 text-2xl font-bold">
+        Add Client
+      </h2>
+
+      <div className="mb-6 space-y-4">
         <Input
-          value={search}
-          onChange={setSearch}
-          placeholder="Search clients..."
+          value={name}
+          onChange={setName}
+          placeholder="Client Name"
+        />
+
+        <Input
+          value={company}
+          onChange={setCompany}
+          placeholder="Company Name"
+        />
+
+        <Input
+          value={email}
+          onChange={setEmail}
+          placeholder="Email Address"
+        />
+
+        <Select
+          value={status}
+          onChange={setStatus}
         />
       </div>
 
-      <div className="overflow-hidden rounded-xl border bg-white">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b bg-slate-50">
-              <th className="p-4 text-left">Name</th>
-              <th className="p-4 text-left">Company</th>
-              <th className="p-4 text-left">Email</th>
-              <th className="p-4 text-left">Status</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {filteredClients.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={4}
-                  className="p-8 text-center text-slate-500"
-                >
-                  No clients found.
-                </td>
-              </tr>
-            ) : (
-              filteredClients.map((client) => (
-                <tr
-                  key={client.id}
-                  className="border-b"
-                >
-                  <td className="p-4">{client.name}</td>
-                  <td className="p-4">{client.company}</td>
-                  <td className="p-4">{client.email}</td>
-                  <td className="p-4">{client.status}</td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      <div className="flex justify-end">
+        <Button
+          onClick={() =>
+            setIsModalOpen(false)
+          }
+        >
+          Close
+        </Button>
       </div>
-    </main>
+    </div>
+  </div>
+)}
+    </>
   );
 }
