@@ -52,62 +52,72 @@ export default function Clients() {
     setEditingClientId(null);
   };
 
-  const handleAddClient = () => {
-    if (
-      !name.trim() ||
-      !company.trim() ||
-      !email.trim()
-    ) {
-      setMessage(
-        "Please complete all fields."
-      );
-      return;
-    }
+const handleAddClient = () => {
+  if (
+    !name.trim() ||
+    !company.trim() ||
+    !email.trim()
+  ) {
+    setMessage(
+      "Please complete all fields."
+    );
+    return;
+  }
 
-    if (editingClientId) {
-      setClientList((prev) =>
-        prev.map((client) =>
-          client.id === editingClientId
-            ? {
-                ...client,
-                name,
-                company,
-                email,
-                status: status as
-                  | "Active"
-                  | "Inactive",
-              }
-            : client
-        )
-      );
+  const emailRegex =
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      setMessage(
-        "Client updated successfully."
-      );
-    } else {
-      const newClient: Client = {
-        id: crypto.randomUUID(),
-        name,
-        company,
-        email,
-        status: status as
-          | "Active"
-          | "Inactive",
-      };
+  if (!emailRegex.test(email)) {
+    setMessage(
+      "Please enter a valid email address."
+    );
+    return;
+  }
 
-      setClientList((prev) => [
-        newClient,
-        ...prev,
-      ]);
+  if (editingClientId) {
+    setClientList((prev) =>
+      prev.map((client) =>
+        client.id === editingClientId
+          ? {
+              ...client,
+              name,
+              company,
+              email,
+              status: status as
+                | "Active"
+                | "Inactive",
+            }
+          : client
+      )
+    );
 
-      setMessage(
-        "Client added successfully."
-      );
-    }
+    setMessage(
+      "Client updated successfully."
+    );
+  } else {
+    const newClient: Client = {
+      id: crypto.randomUUID(),
+      name,
+      company,
+      email,
+      status: status as
+        | "Active"
+        | "Inactive",
+    };
 
-    resetForm();
-    setIsModalOpen(false);
-  };
+    setClientList((prev) => [
+      newClient,
+      ...prev,
+    ]);
+
+    setMessage(
+      "Client added successfully."
+    );
+  }
+
+  resetForm();
+  setIsModalOpen(false);
+};
 
   const handleEditClient = (
     clientId: string
@@ -234,16 +244,16 @@ export default function Clients() {
                       {client.email}
                     </td>
                     <td className="p-4">
-  <span
-    className={
-      client.status === "Active"
-        ? "rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700"
-        : "rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-700"
-    }
-  >
-    {client.status}
-  </span>
-</td>
+                    <span
+                        className={
+                          client.status === "Active"
+                            ? "rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700"
+                            : "rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-700"
+                        }
+                      >
+                        {client.status}
+                      </span>
+                    </td>
 
                     <td className="p-4">
                       <div className="flex gap-2">
