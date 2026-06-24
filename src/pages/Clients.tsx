@@ -17,6 +17,9 @@ export default function Clients() {
 
   const [message, setMessage] = useState("");
 
+  const [editingClientId, setEditingClientId] =
+    useState<string | null>(null);
+
   const [clientList, setClientList] = useState<Client[]>(() => {
     const savedClients =
       localStorage.getItem("flowpilot-clients");
@@ -41,6 +44,14 @@ export default function Clients() {
     );
   }, [search, clientList]);
 
+  const resetForm = () => {
+    setName("");
+    setCompany("");
+    setEmail("");
+    setStatus("Active");
+    setEditingClientId(null);
+  };
+
   const handleAddClient = () => {
     if (
       !name.trim() ||
@@ -53,31 +64,68 @@ export default function Clients() {
       return;
     }
 
-    const newClient: Client = {
-      id: crypto.randomUUID(),
-      name,
-      company,
-      email,
-      status: status as
-        | "Active"
-        | "Inactive",
-    };
+    if (editingClientId) {
+      setClientList((prev) =>
+        prev.map((client) =>
+          client.id === editingClientId
+            ? {
+                ...client,
+                name,
+                company,
+                email,
+                status: status as
+                  | "Active"
+                  | "Inactive",
+              }
+            : client
+        )
+      );
 
-    setClientList((prev) => [
-      newClient,
-      ...prev,
-    ]);
+      setMessage(
+        "Client updated successfully."
+      );
+    } else {
+      const newClient: Client = {
+        id: crypto.randomUUID(),
+        name,
+        company,
+        email,
+        status: status as
+          | "Active"
+          | "Inactive",
+      };
 
-    setName("");
-    setCompany("");
-    setEmail("");
-    setStatus("Active");
+      setClientList((prev) => [
+        newClient,
+        ...prev,
+      ]);
 
+      setMessage(
+        "Client added successfully."
+      );
+    }
+
+    resetForm();
     setIsModalOpen(false);
+  };
 
-    setMessage(
-      "Client added successfully."
+  const handleEditClient = (
+    clientId: string
+  ) => {
+    const client = clientList.find(
+      (c) => c.id === clientId
     );
+
+    if (!client) return;
+
+    setEditingClientId(client.id);
+
+    setName(client.name);
+    setCompany(client.company);
+    setEmail(client.email);
+    setStatus(client.status);
+
+    setIsModalOpen(true);
   };
 
   const handleDeleteClient = (
@@ -115,7 +163,10 @@ export default function Clients() {
           </h1>
 
           <Button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              resetForm();
+              setIsModalOpen(true);
+            }}
           >
             Add Client
           </Button>
@@ -188,16 +239,29 @@ export default function Clients() {
                     </td>
 
                     <td className="p-4">
-                      <Button
-                        variant="danger"
-                        onClick={() =>
-                          handleDeleteClient(
-                            client.id
-                          )
-                        }
-                      >
-                        Delete
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="secondary"
+                          onClick={() =>
+                            handleEditClient(
+                              client.id
+                            )
+                          }
+                        >
+                          Edit
+                        </Button>
+
+                        <Button
+                          variant="danger"
+                          onClick={() =>
+                            handleDeleteClient(
+                              client.id
+                            )
+                          }
+                        >
+                          Delete
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -211,7 +275,9 @@ export default function Clients() {
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
             <h2 className="mb-6 text-2xl font-bold">
-              Add Client
+              {editingClientId
+                ? "Edit Client"
+                : "Add Client"}
             </h2>
 
             <div className="mb-6 space-y-4">
@@ -241,17 +307,21 @@ export default function Clients() {
 
             <div className="flex justify-end gap-3">
               <Button
-                onClick={() =>
-                  setIsModalOpen(false)
-                }
+                variant="secondary"
+                onClick={() => {
+                  resetForm();
+                  setIsModalOpen(false);
+                }}
               >
-                Close
+                Cancel
               </Button>
 
               <Button
                 onClick={handleAddClient}
               >
-                Save Client
+                {editingClientId
+                  ? "Update Client"
+                  : "Save Client"}
               </Button>
             </div>
           </div>
