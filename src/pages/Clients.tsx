@@ -233,10 +233,17 @@ export default function Clients() {
                     <td className="p-4">
                       {client.email}
                     </td>
-
                     <td className="p-4">
-                      {client.status}
-                    </td>
+  <span
+    className={
+      client.status === "Active"
+        ? "rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700"
+        : "rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-700"
+    }
+  >
+    {client.status}
+  </span>
+</td>
 
                     <td className="p-4">
                       <div className="flex gap-2">
