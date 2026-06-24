@@ -36,6 +36,11 @@ export default function Tasks() {
   const [message, setMessage] =
     useState("");
 
+  const [errors, setErrors] = useState({
+    taskTitle: "",
+    assignee: "",
+  });
+
   useEffect(() => {
     localStorage.setItem(
       "flowpilot-tasks",
@@ -44,15 +49,28 @@ export default function Tasks() {
   }, [tasks]);
 
   const handleAddTask = () => {
-    if (
-      !taskTitle.trim() ||
-      !assignee.trim()
-    ) {
-      setMessage(
-        "Please complete all fields."
-      );
-      return;
+    const newErrors = {
+      taskTitle: "",
+      assignee: "",
+    };
+
+    let hasError = false;
+
+    if (!taskTitle.trim()) {
+      newErrors.taskTitle =
+        "Task title is required";
+      hasError = true;
     }
+
+    if (!assignee.trim()) {
+      newErrors.assignee =
+        "Assignee is required";
+      hasError = true;
+    }
+
+    setErrors(newErrors);
+
+    if (hasError) return;
 
     const newTask: Task = {
       id: crypto.randomUUID(),
@@ -68,6 +86,11 @@ export default function Tasks() {
 
     setTaskTitle("");
     setAssignee("");
+
+    setErrors({
+      taskTitle: "",
+      assignee: "",
+    });
 
     setMessage(
       "Task added successfully."
@@ -113,8 +136,8 @@ export default function Tasks() {
   };
 
   return (
-    <main className="p-8">
-      <h1 className="mb-8 text-4xl font-bold">
+    <main className="p-4 md:p-8">
+      <h1 className="mb-8 text-3xl font-bold md:text-4xl">
         Tasks
       </h1>
 
@@ -130,17 +153,33 @@ export default function Tasks() {
         </h2>
 
         <div className="space-y-4">
-          <Input
-            value={taskTitle}
-            onChange={setTaskTitle}
-            placeholder="Task Title"
-          />
+          <div>
+            <Input
+              value={taskTitle}
+              onChange={setTaskTitle}
+              placeholder="Task Title"
+            />
 
-          <Input
-            value={assignee}
-            onChange={setAssignee}
-            placeholder="Assigned To"
-          />
+            {errors.taskTitle && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.taskTitle}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <Input
+              value={assignee}
+              onChange={setAssignee}
+              placeholder="Assigned To"
+            />
+
+            {errors.assignee && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.assignee}
+              </p>
+            )}
+          </div>
 
           <Button
             onClick={handleAddTask}
@@ -150,8 +189,8 @@ export default function Tasks() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border bg-white">
-        <table className="w-full">
+      <div className="overflow-x-auto rounded-xl border bg-white">
+        <table className="w-full min-w-[700px]">
           <thead>
             <tr className="border-b bg-slate-50">
               <th className="p-4 text-left">
@@ -200,7 +239,7 @@ export default function Tasks() {
                 </td>
 
                 <td className="p-4">
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <Button
                       variant="secondary"
                       onClick={() =>
