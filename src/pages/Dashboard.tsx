@@ -3,6 +3,26 @@ import Card from "../components/ui/Card";
 import { clients as initialClients } from "../data/clients";
 import type { Client } from "../types/client";
 
+type Project = {
+  id: string;
+  name: string;
+  client: string;
+  status: "Active" | "Completed";
+};
+
+type Task = {
+  id: string;
+  title: string;
+  assignee: string;
+  status: "Pending" | "Completed";
+};
+
+type TeamMember = {
+  id: string;
+  name: string;
+  role: string;
+};
+
 export default function Dashboard() {
   const clientList: Client[] = useMemo(() => {
     const savedClients =
@@ -13,6 +33,39 @@ export default function Dashboard() {
       : initialClients;
   }, []);
 
+  const projects: Project[] = useMemo(() => {
+    const savedProjects =
+      localStorage.getItem(
+        "flowpilot-projects"
+      );
+
+    return savedProjects
+      ? JSON.parse(savedProjects)
+      : [];
+  }, []);
+
+  const tasks: Task[] = useMemo(() => {
+    const savedTasks =
+      localStorage.getItem(
+        "flowpilot-tasks"
+      );
+
+    return savedTasks
+      ? JSON.parse(savedTasks)
+      : [];
+  }, []);
+
+  const team: TeamMember[] = useMemo(() => {
+    const savedTeam =
+      localStorage.getItem(
+        "flowpilot-team"
+      );
+
+    return savedTeam
+      ? JSON.parse(savedTeam)
+      : [];
+  }, []);
+
   const totalClients =
     clientList.length;
 
@@ -21,31 +74,38 @@ export default function Dashboard() {
       (client) => client.status === "Active"
     ).length;
 
-  const inactiveClients =
-    clientList.filter(
-      (client) => client.status === "Inactive"
+  const totalProjects =
+    projects.length;
+
+  const totalTasks =
+    tasks.length;
+
+  const completedTasks =
+    tasks.filter(
+      (task) =>
+        task.status === "Completed"
     ).length;
 
-  const activeRate =
-    totalClients === 0
-      ? "0%"
-      : `${Math.round(
-          (activeClients / totalClients) * 100
-        )}%`;
+  const totalTeamMembers =
+    team.length;
 
   return (
-    <main className="p-8">
-      <h1 className="mb-8 text-4xl font-bold">
+    <main className="p-4 md:p-8">
+      <h1 className="mb-2 text-3xl font-bold md:text-4xl">
         Welcome to FlowPilot
       </h1>
+
+      <p className="mb-8 text-slate-500">
+        Agency Management Dashboard
+      </p>
 
       <section
         className="
           grid
           gap-6
           grid-cols-1
-          md:grid-cols-2
-          xl:grid-cols-4
+          sm:grid-cols-2
+          xl:grid-cols-3
         "
       >
         <Card
@@ -59,14 +119,52 @@ export default function Dashboard() {
         />
 
         <Card
-          title="Inactive Clients"
-          value={String(inactiveClients)}
+          title="Projects"
+          value={String(totalProjects)}
         />
 
         <Card
-          title="Active Rate"
-          value={activeRate}
+          title="Tasks"
+          value={String(totalTasks)}
         />
+
+        <Card
+          title="Completed Tasks"
+          value={String(completedTasks)}
+        />
+
+        <Card
+          title="Team Members"
+          value={String(totalTeamMembers)}
+        />
+      </section>
+
+      <section className="mt-10 rounded-xl border bg-white p-6">
+        <h2 className="mb-4 text-2xl font-semibold">
+          Agency Overview
+        </h2>
+
+        <div className="space-y-3 text-slate-600">
+          <p>
+            • Clients managed:{" "}
+            <strong>{totalClients}</strong>
+          </p>
+
+          <p>
+            • Active projects:{" "}
+            <strong>{totalProjects}</strong>
+          </p>
+
+          <p>
+            • Tasks tracked:{" "}
+            <strong>{totalTasks}</strong>
+          </p>
+
+          <p>
+            • Team members:{" "}
+            <strong>{totalTeamMembers}</strong>
+          </p>
+        </div>
       </section>
     </main>
   );
