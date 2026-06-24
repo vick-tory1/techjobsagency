@@ -5,14 +5,19 @@ type Props = {
   children: React.ReactNode;
 };
 
-export default function DashboardLayout({ children }: Props) {
+export default function DashboardLayout({
+  children,
+}: Props) {
   return (
-    <div style={{ display: "flex" }}>
+    <div className="min-h-screen md:flex">
       <Sidebar />
 
-      <div style={{ flex: 1 }}>
+      <div className="flex-1">
         <Navbar />
-        {children}
+
+        <main className="p-4 md:p-6 lg:p-8">
+          {children}
+        </main>
       </div>
     </div>
   );

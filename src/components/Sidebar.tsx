@@ -6,7 +6,13 @@ const navItem =
 export default function Sidebar() {
   return (
     <aside
-      className="w-64 bg-slate-950 text-white min-h-screen"
+      className="
+        w-full
+        md:w-64
+        bg-slate-950
+        text-white
+        md:min-h-screen
+      "
       aria-label="Primary navigation"
     >
       <div className="p-6">
@@ -16,8 +22,17 @@ export default function Sidebar() {
       </div>
 
       <nav aria-label="Main menu">
-        <ul className="space-y-2 px-4">
-
+        <ul
+          className="
+            flex
+            flex-wrap
+            gap-2
+            px-4
+            pb-4
+            md:block
+            md:space-y-2
+          "
+        >
           <li>
             <NavLink
               to="/"
@@ -93,7 +108,6 @@ export default function Sidebar() {
               Team
             </NavLink>
           </li>
-
         </ul>
       </nav>
     </aside>
