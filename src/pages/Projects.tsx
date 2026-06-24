@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
@@ -11,14 +11,30 @@ type Project = {
 };
 
 export default function Projects() {
-  const [projects, setProjects] = useState<Project[]>([
-    {
-      id: crypto.randomUUID(),
-      name: "FlowPilot Website",
-      client: "Acme Inc",
-      status: "Active",
-    },
-  ]);
+  const [projects, setProjects] = useState<Project[]>(() => {
+    const savedProjects =
+      localStorage.getItem(
+        "flowpilot-projects"
+      );
+
+    return savedProjects
+      ? JSON.parse(savedProjects)
+      : [
+          {
+            id: crypto.randomUUID(),
+            name: "FlowPilot Website",
+            client: "Acme Inc",
+            status: "Active",
+          },
+        ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      "flowpilot-projects",
+      JSON.stringify(projects)
+    );
+  }, [projects]);
 
   const [projectName, setProjectName] =
     useState("");
