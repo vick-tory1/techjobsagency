@@ -23,11 +23,29 @@ export default function Projects() {
           {
             id: crypto.randomUUID(),
             name: "FlowPilot Website",
-            client: "Acme Inc",
+            client: "Acme Incorporated",
             status: "Active",
           },
         ];
   });
+
+  const [projectName, setProjectName] =
+    useState("");
+
+  const [clientName, setClientName] =
+    useState("");
+
+  const [editingId, setEditingId] =
+    useState<string | null>(null);
+
+  const [message, setMessage] =
+    useState("");
+
+  const [errors, setErrors] =
+    useState({
+      projectName: "",
+      clientName: "",
+    });
 
   useEffect(() => {
     localStorage.setItem(
@@ -36,43 +54,128 @@ export default function Projects() {
     );
   }, [projects]);
 
-  const [projectName, setProjectName] =
-    useState("");
-
-  const [clientName, setClientName] =
-    useState("");
-
-  const [message, setMessage] =
-    useState("");
-
-  const handleAddProject = () => {
-    if (
-      !projectName.trim() ||
-      !clientName.trim()
-    ) {
-      setMessage(
-        "Please complete all fields."
-      );
-      return;
-    }
-
-    const newProject: Project = {
-      id: crypto.randomUUID(),
-      name: projectName,
-      client: clientName,
-      status: "Active",
-    };
-
-    setProjects((prev) => [
-      newProject,
-      ...prev,
-    ]);
-
+  const resetForm = () => {
     setProjectName("");
     setClientName("");
+    setEditingId(null);
+
+    setErrors({
+      projectName: "",
+      clientName: "",
+    });
+  };
+
+  const handleSaveProject = () => {
+    const newErrors = {
+      projectName: "",
+      clientName: "",
+    };
+
+    let hasError = false;
+
+    setMessage("");
+
+    if (!projectName.trim()) {
+      newErrors.projectName =
+        "Project name is required";
+      hasError = true;
+    } else if (
+      projectName.trim().length < 12
+    ) {
+      newErrors.projectName =
+        "Project name must be at least 12 characters";
+      hasError = true;
+    }
+
+    if (!clientName.trim()) {
+      newErrors.clientName =
+        "Client name is required";
+      hasError = true;
+    } else if (
+      clientName.trim().length < 12
+    ) {
+      newErrors.clientName =
+        "Client name must be at least 12 characters";
+      hasError = true;
+    }
+
+    setErrors(newErrors);
+
+    if (hasError) return;
+
+    if (editingId) {
+      setProjects((prev) =>
+        prev.map((project) =>
+          project.id === editingId
+            ? {
+                ...project,
+                name: projectName,
+                client: clientName,
+              }
+            : project
+        )
+      );
+
+      setMessage(
+        "Project updated successfully."
+      );
+    } else {
+      const newProject: Project = {
+        id: crypto.randomUUID(),
+        name: projectName,
+        client: clientName,
+        status: "Active",
+      };
+
+      setProjects((prev) => [
+        newProject,
+        ...prev,
+      ]);
+
+      setMessage(
+        "Project added successfully."
+      );
+    }
+
+    resetForm();
+  };
+
+  const handleEditProject = (
+    id: string
+  ) => {
+    const project = projects.find(
+      (p) => p.id === id
+    );
+
+    if (!project) return;
+
+    setMessage("");
+
+    setEditingId(project.id);
+    setProjectName(project.name);
+    setClientName(project.client);
+  };
+
+  const handleToggleStatus = (
+    id: string
+  ) => {
+    setProjects((prev) =>
+      prev.map((project) =>
+        project.id === id
+          ? {
+              ...project,
+              status:
+                project.status ===
+                "Active"
+                  ? "Completed"
+                  : "Active",
+            }
+          : project
+      )
+    );
 
     setMessage(
-      "Project added successfully."
+      "Project status updated."
     );
   };
 
@@ -90,11 +193,19 @@ export default function Projects() {
         (project) => project.id !== id
       )
     );
+
+    setMessage(
+      "Project deleted successfully."
+    );
+
+    if (editingId === id) {
+      resetForm();
+    }
   };
 
   return (
-    <main className="p-8">
-      <h1 className="mb-8 text-4xl font-bold">
+    <main className="p-4 md:p-8">
+      <h1 className="mb-8 text-3xl font-bold md:text-4xl">
         Projects
       </h1>
 
@@ -106,32 +217,68 @@ export default function Projects() {
 
       <div className="mb-8 rounded-xl border bg-white p-6">
         <h2 className="mb-4 text-xl font-semibold">
-          Add Project
+          {editingId
+            ? "Edit Project"
+            : "Add Project"}
         </h2>
 
         <div className="space-y-4">
-          <Input
-            value={projectName}
-            onChange={setProjectName}
-            placeholder="Project Name"
-          />
+          <div>
+            <Input
+              value={projectName}
+              onChange={setProjectName}
+              placeholder="Project Name"
+            />
 
-          <Input
-            value={clientName}
-            onChange={setClientName}
-            placeholder="Client Name"
-          />
+            {errors.projectName && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.projectName}
+              </p>
+            )}
+          </div>
 
-          <Button
-            onClick={handleAddProject}
-          >
-            Add Project
-          </Button>
+          <div>
+            <Input
+              value={clientName}
+              onChange={setClientName}
+              placeholder="Client Name"
+            />
+
+            {errors.clientName && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.clientName}
+              </p>
+            )}
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <Button
+              onClick={handleSaveProject}
+            >
+              {editingId
+                ? "Update Project"
+                : "Add Project"}
+            </Button>
+
+            {editingId && (
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  resetForm();
+                  setMessage(
+                    "Edit cancelled."
+                  );
+                }}
+              >
+                Cancel
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border bg-white">
-        <table className="w-full">
+      <div className="overflow-x-auto rounded-xl border bg-white">
+        <table className="w-full min-w-[800px]">
           <thead>
             <tr className="border-b bg-slate-50">
               <th className="p-4 text-left">
@@ -167,22 +314,53 @@ export default function Projects() {
                 </td>
 
                 <td className="p-4">
-                  <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
+                  <span
+                    className={
+                      project.status ===
+                      "Completed"
+                        ? "rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700"
+                        : "rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700"
+                    }
+                  >
                     {project.status}
                   </span>
                 </td>
 
                 <td className="p-4">
-                  <Button
-                    variant="danger"
-                    onClick={() =>
-                      handleDeleteProject(
-                        project.id
-                      )
-                    }
-                  >
-                    Delete
-                  </Button>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant="secondary"
+                      onClick={() =>
+                        handleEditProject(
+                          project.id
+                        )
+                      }
+                    >
+                      Edit
+                    </Button>
+
+                    <Button
+                      variant="secondary"
+                      onClick={() =>
+                        handleToggleStatus(
+                          project.id
+                        )
+                      }
+                    >
+                      Toggle Status
+                    </Button>
+
+                    <Button
+                      variant="danger"
+                      onClick={() =>
+                        handleDeleteProject(
+                          project.id
+                        )
+                      }
+                    >
+                      Delete
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))}

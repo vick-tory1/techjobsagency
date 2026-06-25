@@ -17,6 +17,12 @@ export default function Clients() {
 
   const [message, setMessage] = useState("");
 
+  const [errors, setErrors] = useState({
+    name: "",
+    company: "",
+    email: "",
+  });
+
   const [editingClientId, setEditingClientId] =
     useState<string | null>(null);
 
@@ -50,74 +56,104 @@ export default function Clients() {
     setEmail("");
     setStatus("Active");
     setEditingClientId(null);
+
+    setErrors({
+      name: "",
+      company: "",
+      email: "",
+    });
   };
 
-const handleAddClient = () => {
-  if (
-    !name.trim() ||
-    !company.trim() ||
-    !email.trim()
-  ) {
-    setMessage(
-      "Please complete all fields."
-    );
-    return;
-  }
-
-  const emailRegex =
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  if (!emailRegex.test(email)) {
-    setMessage(
-      "Please enter a valid email address."
-    );
-    return;
-  }
-
-  if (editingClientId) {
-    setClientList((prev) =>
-      prev.map((client) =>
-        client.id === editingClientId
-          ? {
-              ...client,
-              name,
-              company,
-              email,
-              status: status as
-                | "Active"
-                | "Inactive",
-            }
-          : client
-      )
-    );
-
-    setMessage(
-      "Client updated successfully."
-    );
-  } else {
-    const newClient: Client = {
-      id: crypto.randomUUID(),
-      name,
-      company,
-      email,
-      status: status as
-        | "Active"
-        | "Inactive",
+  const handleAddClient = () => {
+    const newErrors = {
+      name: "",
+      company: "",
+      email: "",
     };
 
-    setClientList((prev) => [
-      newClient,
-      ...prev,
-    ]);
+    let hasError = false;
 
-    setMessage(
-      "Client added successfully."
-    );
-  }
+    if (!name.trim()) {
+      newErrors.name =
+        "Client name is required";
+      hasError = true;
+    } else if (name.trim().length < 12) {
+      newErrors.name =
+        "Client name must be at least 12 characters";
+      hasError = true;
+    }
 
-  resetForm();
-  setIsModalOpen(false);
-};
+    if (!company.trim()) {
+      newErrors.company =
+        "Company name is required";
+      hasError = true;
+    } else if (company.trim().length < 12) {
+      newErrors.company =
+        "Company name must be at least 12 characters";
+      hasError = true;
+    }
+
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email.trim()) {
+      newErrors.email =
+        "Email address is required";
+      hasError = true;
+    } else if (!emailRegex.test(email)) {
+      newErrors.email =
+        "Please enter a valid email address";
+      hasError = true;
+    }
+
+    setErrors(newErrors);
+
+    if (hasError) return;
+
+    if (editingClientId) {
+      setClientList((prev) =>
+        prev.map((client) =>
+          client.id === editingClientId
+            ? {
+                ...client,
+                name,
+                company,
+                email,
+                status: status as
+                  | "Active"
+                  | "Inactive",
+              }
+            : client
+        )
+      );
+
+      setMessage(
+        "Client updated successfully."
+      );
+    } else {
+      const newClient: Client = {
+        id: crypto.randomUUID(),
+        name,
+        company,
+        email,
+        status: status as
+          | "Active"
+          | "Inactive",
+      };
+
+      setClientList((prev) => [
+        newClient,
+        ...prev,
+      ]);
+
+      setMessage(
+        "Client added successfully."
+      );
+    }
+
+    resetForm();
+    setIsModalOpen(false);
+  };
 
   const handleEditClient = (
     clientId: string
@@ -160,15 +196,15 @@ const handleAddClient = () => {
 
   return (
     <>
-      <main className="p-8">
+      <main className="p-4 md:p-8">
         {message && (
           <div className="mb-6 rounded-lg bg-green-100 p-4 text-green-800">
             {message}
           </div>
         )}
 
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-4xl font-bold">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          <h1 className="text-3xl font-bold md:text-4xl">
             Clients
           </h1>
 
@@ -190,8 +226,8 @@ const handleAddClient = () => {
           />
         </div>
 
-        <div className="overflow-hidden rounded-xl border bg-white">
-          <table className="w-full">
+        <div className="overflow-x-auto rounded-xl border bg-white">
+          <table className="w-full min-w-[800px]">
             <thead>
               <tr className="border-b bg-slate-50">
                 <th className="p-4 text-left">
@@ -243,10 +279,12 @@ const handleAddClient = () => {
                     <td className="p-4">
                       {client.email}
                     </td>
+
                     <td className="p-4">
-                    <span
+                      <span
                         className={
-                          client.status === "Active"
+                          client.status ===
+                          "Active"
                             ? "rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700"
                             : "rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-700"
                         }
@@ -256,7 +294,7 @@ const handleAddClient = () => {
                     </td>
 
                     <td className="p-4">
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2">
                         <Button
                           variant="secondary"
                           onClick={() =>
@@ -298,23 +336,47 @@ const handleAddClient = () => {
             </h2>
 
             <div className="mb-6 space-y-4">
-              <Input
-                value={name}
-                onChange={setName}
-                placeholder="Client Name"
-              />
+              <div>
+                <Input
+                  value={name}
+                  onChange={setName}
+                  placeholder="Client Name"
+                />
 
-              <Input
-                value={company}
-                onChange={setCompany}
-                placeholder="Company Name"
-              />
+                {errors.name && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.name}
+                  </p>
+                )}
+              </div>
 
-              <Input
-                value={email}
-                onChange={setEmail}
-                placeholder="Email Address"
-              />
+              <div>
+                <Input
+                  value={company}
+                  onChange={setCompany}
+                  placeholder="Company Name"
+                />
+
+                {errors.company && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.company}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Input
+                  value={email}
+                  onChange={setEmail}
+                  placeholder="Email Address"
+                />
+
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.email}
+                  </p>
+                )}
+              </div>
 
               <Select
                 value={status}
@@ -322,7 +384,7 @@ const handleAddClient = () => {
               />
             </div>
 
-            <div className="flex justify-end gap-3">
+            <div className="flex flex-wrap justify-end gap-3">
               <Button
                 variant="secondary"
                 onClick={() => {

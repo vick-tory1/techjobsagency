@@ -74,8 +74,19 @@ export default function Dashboard() {
       (client) => client.status === "Active"
     ).length;
 
+  const inactiveClients =
+    clientList.filter(
+      (client) => client.status === "Inactive"
+    ).length;
+
   const totalProjects =
     projects.length;
+
+  const activeProjects =
+    projects.filter(
+      (project) =>
+        project.status === "Active"
+    ).length;
 
   const totalTasks =
     tasks.length;
@@ -84,6 +95,12 @@ export default function Dashboard() {
     tasks.filter(
       (task) =>
         task.status === "Completed"
+    ).length;
+
+  const pendingTasks =
+    tasks.filter(
+      (task) =>
+        task.status === "Pending"
     ).length;
 
   const totalTeamMembers =
@@ -105,7 +122,7 @@ export default function Dashboard() {
           gap-6
           grid-cols-1
           sm:grid-cols-2
-          xl:grid-cols-3
+          xl:grid-cols-4
         "
       >
         <Card
@@ -119,8 +136,18 @@ export default function Dashboard() {
         />
 
         <Card
+          title="Inactive Clients"
+          value={String(inactiveClients)}
+        />
+
+        <Card
           title="Projects"
           value={String(totalProjects)}
+        />
+
+        <Card
+          title="Active Projects"
+          value={String(activeProjects)}
         />
 
         <Card
@@ -131,6 +158,11 @@ export default function Dashboard() {
         <Card
           title="Completed Tasks"
           value={String(completedTasks)}
+        />
+
+        <Card
+          title="Pending Tasks"
+          value={String(pendingTasks)}
         />
 
         <Card
@@ -151,13 +183,28 @@ export default function Dashboard() {
           </p>
 
           <p>
+            • Active clients:{" "}
+            <strong>{activeClients}</strong>
+          </p>
+
+          <p>
             • Active projects:{" "}
-            <strong>{totalProjects}</strong>
+            <strong>{activeProjects}</strong>
           </p>
 
           <p>
             • Tasks tracked:{" "}
             <strong>{totalTasks}</strong>
+          </p>
+
+          <p>
+            • Pending tasks:{" "}
+            <strong>{pendingTasks}</strong>
+          </p>
+
+          <p>
+            • Completed tasks:{" "}
+            <strong>{completedTasks}</strong>
           </p>
 
           <p>

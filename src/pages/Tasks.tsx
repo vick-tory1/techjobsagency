@@ -21,7 +21,7 @@ export default function Tasks() {
           {
             id: crypto.randomUUID(),
             title: "Design Homepage",
-            assignee: "Sarah",
+            assignee: "Sarah Johnson",
             status: "Pending",
           },
         ];
@@ -32,6 +32,9 @@ export default function Tasks() {
 
   const [assignee, setAssignee] =
     useState("");
+
+  const [editingId, setEditingId] =
+    useState<string | null>(null);
 
   const [message, setMessage] =
     useState("");
@@ -48,7 +51,18 @@ export default function Tasks() {
     );
   }, [tasks]);
 
-  const handleAddTask = () => {
+  const resetForm = () => {
+    setTaskTitle("");
+    setAssignee("");
+    setEditingId(null);
+
+    setErrors({
+      taskTitle: "",
+      assignee: "",
+    });
+  };
+
+  const handleSaveTask = () => {
     const newErrors = {
       taskTitle: "",
       assignee: "",
@@ -60,11 +74,23 @@ export default function Tasks() {
       newErrors.taskTitle =
         "Task title is required";
       hasError = true;
+    } else if (
+      taskTitle.trim().length < 12
+    ) {
+      newErrors.taskTitle =
+        "Task title must be at least 12 characters";
+      hasError = true;
     }
 
     if (!assignee.trim()) {
       newErrors.assignee =
         "Assignee is required";
+      hasError = true;
+    } else if (
+      assignee.trim().length < 12
+    ) {
+      newErrors.assignee =
+        "Assignee name must be at least 12 characters";
       hasError = true;
     }
 
@@ -72,29 +98,55 @@ export default function Tasks() {
 
     if (hasError) return;
 
-    const newTask: Task = {
-      id: crypto.randomUUID(),
-      title: taskTitle,
-      assignee,
-      status: "Pending",
-    };
+    if (editingId) {
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === editingId
+            ? {
+                ...task,
+                title: taskTitle,
+                assignee,
+              }
+            : task
+        )
+      );
 
-    setTasks((prev) => [
-      newTask,
-      ...prev,
-    ]);
+      setMessage(
+        "Task updated successfully."
+      );
+    } else {
+      const newTask: Task = {
+        id: crypto.randomUUID(),
+        title: taskTitle,
+        assignee,
+        status: "Pending",
+      };
 
-    setTaskTitle("");
-    setAssignee("");
+      setTasks((prev) => [
+        newTask,
+        ...prev,
+      ]);
 
-    setErrors({
-      taskTitle: "",
-      assignee: "",
-    });
+      setMessage(
+        "Task added successfully."
+      );
+    }
 
-    setMessage(
-      "Task added successfully."
+    resetForm();
+  };
+
+  const handleEditTask = (
+    id: string
+  ) => {
+    const task = tasks.find(
+      (t) => t.id === id
     );
+
+    if (!task) return;
+
+    setEditingId(task.id);
+    setTaskTitle(task.title);
+    setAssignee(task.assignee);
   };
 
   const handleToggleStatus = (
@@ -133,6 +185,10 @@ export default function Tasks() {
     setMessage(
       "Task deleted successfully."
     );
+
+    if (editingId === id) {
+      resetForm();
+    }
   };
 
   return (
@@ -149,7 +205,9 @@ export default function Tasks() {
 
       <div className="mb-8 rounded-xl border bg-white p-6">
         <h2 className="mb-4 text-xl font-semibold">
-          Add Task
+          {editingId
+            ? "Edit Task"
+            : "Add Task"}
         </h2>
 
         <div className="space-y-4">
@@ -181,16 +239,29 @@ export default function Tasks() {
             )}
           </div>
 
-          <Button
-            onClick={handleAddTask}
-          >
-            Add Task
-          </Button>
+          <div className="flex flex-wrap gap-3">
+            <Button
+              onClick={handleSaveTask}
+            >
+              {editingId
+                ? "Update Task"
+                : "Add Task"}
+            </Button>
+
+            {editingId && (
+              <Button
+                variant="secondary"
+                onClick={resetForm}
+              >
+                Cancel
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
       <div className="overflow-x-auto rounded-xl border bg-white">
-        <table className="w-full min-w-[700px]">
+        <table className="w-full min-w-[800px]">
           <thead>
             <tr className="border-b bg-slate-50">
               <th className="p-4 text-left">
@@ -240,6 +311,17 @@ export default function Tasks() {
 
                 <td className="p-4">
                   <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant="secondary"
+                      onClick={() =>
+                        handleEditTask(
+                          task.id
+                        )
+                      }
+                    >
+                      Edit
+                    </Button>
+
                     <Button
                       variant="secondary"
                       onClick={() =>

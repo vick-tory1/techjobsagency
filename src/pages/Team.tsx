@@ -33,6 +33,9 @@ export default function Team() {
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
 
+  const [editingId, setEditingId] =
+    useState<string | null>(null);
+
   const [message, setMessage] =
     useState("");
 
@@ -49,7 +52,18 @@ export default function Team() {
     );
   }, [members]);
 
-  const handleAddMember = () => {
+  const resetForm = () => {
+    setName("");
+    setRole("");
+    setEditingId(null);
+
+    setErrors({
+      name: "",
+      role: "",
+    });
+  };
+
+  const handleSaveMember = () => {
     const newErrors = {
       name: "",
       role: "",
@@ -61,11 +75,19 @@ export default function Team() {
       newErrors.name =
         "Member name is required";
       hasError = true;
+    } else if (name.trim().length < 12) {
+      newErrors.name =
+        "Member name must be at least 12 characters";
+      hasError = true;
     }
 
     if (!role.trim()) {
       newErrors.role =
         "Role is required";
+      hasError = true;
+    } else if (role.trim().length < 12) {
+      newErrors.role =
+        "Role must be at least 12 characters";
       hasError = true;
     }
 
@@ -73,28 +95,54 @@ export default function Team() {
 
     if (hasError) return;
 
-    const newMember: TeamMember = {
-      id: crypto.randomUUID(),
-      name,
-      role,
-    };
+    if (editingId) {
+      setMembers((prev) =>
+        prev.map((member) =>
+          member.id === editingId
+            ? {
+                ...member,
+                name,
+                role,
+              }
+            : member
+        )
+      );
 
-    setMembers((prev) => [
-      newMember,
-      ...prev,
-    ]);
+      setMessage(
+        "Team member updated successfully."
+      );
+    } else {
+      const newMember: TeamMember = {
+        id: crypto.randomUUID(),
+        name,
+        role,
+      };
 
-    setName("");
-    setRole("");
+      setMembers((prev) => [
+        newMember,
+        ...prev,
+      ]);
 
-    setErrors({
-      name: "",
-      role: "",
-    });
+      setMessage(
+        "Team member added successfully."
+      );
+    }
 
-    setMessage(
-      "Team member added successfully."
+    resetForm();
+  };
+
+  const handleEditMember = (
+    id: string
+  ) => {
+    const member = members.find(
+      (m) => m.id === id
     );
+
+    if (!member) return;
+
+    setEditingId(member.id);
+    setName(member.name);
+    setRole(member.role);
   };
 
   const handleDeleteMember = (
@@ -115,6 +163,10 @@ export default function Team() {
     setMessage(
       "Team member removed successfully."
     );
+
+    if (editingId === id) {
+      resetForm();
+    }
   };
 
   return (
@@ -131,7 +183,9 @@ export default function Team() {
 
       <div className="mb-8 rounded-xl border bg-white p-6">
         <h2 className="mb-4 text-xl font-semibold">
-          Add Team Member
+          {editingId
+            ? "Edit Team Member"
+            : "Add Team Member"}
         </h2>
 
         <div className="space-y-4">
@@ -163,11 +217,24 @@ export default function Team() {
             )}
           </div>
 
-          <Button
-            onClick={handleAddMember}
-          >
-            Add Member
-          </Button>
+          <div className="flex flex-wrap gap-3">
+            <Button
+              onClick={handleSaveMember}
+            >
+              {editingId
+                ? "Update Member"
+                : "Add Member"}
+            </Button>
+
+            {editingId && (
+              <Button
+                variant="secondary"
+                onClick={resetForm}
+              >
+                Cancel
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -204,16 +271,29 @@ export default function Team() {
                 </td>
 
                 <td className="p-4">
-                  <Button
-                    variant="danger"
-                    onClick={() =>
-                      handleDeleteMember(
-                        member.id
-                      )
-                    }
-                  >
-                    Delete
-                  </Button>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant="secondary"
+                      onClick={() =>
+                        handleEditMember(
+                          member.id
+                        )
+                      }
+                    >
+                      Edit
+                    </Button>
+
+                    <Button
+                      variant="danger"
+                      onClick={() =>
+                        handleDeleteMember(
+                          member.id
+                        )
+                      }
+                    >
+                      Delete
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))}
