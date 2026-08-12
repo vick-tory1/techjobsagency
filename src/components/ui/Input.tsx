@@ -22,7 +22,7 @@ export default function Input({
         py-3
         outline-none
         focus:ring-2
-        focus:ring-blue-500
+        focus:ring-green-500
       "
     />
   );

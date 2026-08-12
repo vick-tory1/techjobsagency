@@ -3,10 +3,12 @@ import { useEffect, useMemo, useState } from "react";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import Select from "../components/ui/Select";
-import { clients as initialClients } from "../data/clients";
+import { useRegisteredUsers } from "../hooks/useAuth";
+import { useStoredList } from "../hooks/useStoredList";
 import type { Client } from "../types/client";
 
 export default function Clients() {
+  const registeredUsers = useRegisteredUsers();
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -26,29 +28,101 @@ export default function Clients() {
   const [editingClientId, setEditingClientId] =
     useState<string | null>(null);
 
-  const [clientList, setClientList] = useState<Client[]>(() => {
-    const savedClients =
-      localStorage.getItem("flowpilot-clients");
-
-    return savedClients
-      ? JSON.parse(savedClients)
-      : initialClients;
-  });
+  const [clientList, setClientList] = useStoredList<Client>("flowpilot-clients", []);
+  const registeredEmployers: Client[] = registeredUsers
+    .filter((user) => user.role === "employer")
+    .map((user) => ({
+      id: `registered-${user.id}`,
+      name: user.name,
+      company: user.company || "Registered Employer",
+      email: user.email,
+      status: "Active",
+    }));
+  const visibleClients = [
+    ...registeredEmployers,
+    ...clientList.filter(
+      (client) =>
+        !registeredEmployers.some(
+          (registeredEmployer) => registeredEmployer.email.toLowerCase() === client.email.toLowerCase()
+        )
+    ),
+  ];
 
   useEffect(() => {
-    localStorage.setItem(
-      "flowpilot-clients",
-      JSON.stringify(clientList)
+  if (!message) return;
+
+  const timer = setTimeout(() => {
+    setMessage("");
+  }, 3000);
+
+  return () => clearTimeout(timer);
+}, [message]);
+
+useEffect(() => {
+  const handleEscape = (
+    e: KeyboardEvent
+  ) => {
+    if (e.key === "Escape") {
+      resetForm();
+      setIsModalOpen(false);
+    }
+  };
+
+  window.addEventListener(
+    "keydown",
+    handleEscape
+  );
+
+  return () => {
+    window.removeEventListener(
+      "keydown",
+      handleEscape
     );
-  }, [clientList]);
+  };
+}, []);
+
+useEffect(() => {
+  if (!name) {
+    setErrors((prev) => ({
+      ...prev,
+      name: "",
+    }));
+    return;
+  }
+
+  setErrors((prev) => ({
+    ...prev,
+    name:
+      name.trim().length < 12
+        ? "Client name must be at least 12 characters"
+        : "",
+  }));
+}, [name]);
+
+useEffect(() => {
+  if (!company) {
+    setErrors((prev) => ({
+      ...prev,
+      company: "",
+    }));
+    return;
+  }
+
+  setErrors((prev) => ({
+    ...prev,
+    company:
+      company.trim().length < 12
+        ? "Company name must be at least 12 characters"
+        : "",
+  }));
+}, [company]);
 
   const filteredClients = useMemo(() => {
-    return clientList.filter((client) =>
-      client.name
-        .toLowerCase()
-        .includes(search.toLowerCase())
+    const normalizedSearch = search.toLowerCase();
+    return visibleClients.filter((client) =>
+      [client.name, client.company, client.email].join(" ").toLowerCase().includes(normalizedSearch)
     );
-  }, [search, clientList]);
+  }, [search, visibleClients]);
 
   const resetForm = () => {
     setName("");
@@ -196,17 +270,18 @@ export default function Clients() {
 
   return (
     <>
-      <main className="p-4 md:p-8">
+        <main className="space-y-6">
         {message && (
           <div className="mb-6 rounded-lg bg-green-100 p-4 text-green-800">
             {message}
           </div>
         )}
 
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-          <h1 className="text-3xl font-bold md:text-4xl">
-            Clients
-          </h1>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-950 md:text-4xl">Employers</h1>
+            <p className="mt-2 text-gray-500">Registered employer accounts appear here automatically. Manual employer records stay available for direct outreach and account management.</p>
+          </div>
 
           <Button
             onClick={() => {
@@ -214,11 +289,11 @@ export default function Clients() {
               setIsModalOpen(true);
             }}
           >
-            Add Client
+            Add Employer
           </Button>
         </div>
 
-        <div className="mb-6 max-w-md">
+        <div className="max-w-md">
           <Input
             value={search}
             onChange={setSearch}
@@ -226,20 +301,20 @@ export default function Clients() {
           />
         </div>
 
-        <div className="overflow-x-auto rounded-xl border bg-white">
+        <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
           <table className="w-full min-w-[800px]">
             <thead>
-              <tr className="border-b bg-slate-50">
+              <tr className="border-b bg-gray-50">
                 <th className="p-4 text-left">
-                  Name
+                  Contact
                 </th>
 
                 <th className="p-4 text-left">
-                  Company
+                  Employer
                 </th>
 
                 <th className="p-4 text-left">
-                  Email
+                  Hiring Email
                 </th>
 
                 <th className="p-4 text-left">
@@ -257,9 +332,9 @@ export default function Clients() {
                 <tr>
                   <td
                     colSpan={5}
-                    className="p-8 text-center text-slate-500"
+                    className="p-8 text-center text-gray-500"
                   >
-                    No clients found.
+                    No employers found.
                   </td>
                 </tr>
               ) : (
@@ -286,7 +361,7 @@ export default function Clients() {
                           client.status ===
                           "Active"
                             ? "rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700"
-                            : "rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-700"
+                            : "rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700"
                         }
                       >
                         {client.status}
@@ -295,27 +370,33 @@ export default function Clients() {
 
                     <td className="p-4">
                       <div className="flex flex-wrap gap-2">
-                        <Button
-                          variant="secondary"
-                          onClick={() =>
-                            handleEditClient(
-                              client.id
-                            )
-                          }
-                        >
-                          Edit
-                        </Button>
+                        {client.id.startsWith("registered-") ? (
+                          <span className="rounded-full bg-green-50 px-3 py-1 text-sm font-semibold text-green-700">Registered</span>
+                        ) : (
+                          <>
+                            <Button
+                              variant="secondary"
+                              onClick={() =>
+                                handleEditClient(
+                                  client.id
+                                )
+                              }
+                            >
+                              Edit
+                            </Button>
 
-                        <Button
-                          variant="danger"
-                          onClick={() =>
-                            handleDeleteClient(
-                              client.id
-                            )
-                          }
-                        >
-                          Delete
-                        </Button>
+                            <Button
+                              variant="danger"
+                              onClick={() =>
+                                handleDeleteClient(
+                                  client.id
+                                )
+                              }
+                            >
+                              Delete
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -331,8 +412,8 @@ export default function Clients() {
           <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
             <h2 className="mb-6 text-2xl font-bold">
               {editingClientId
-                ? "Edit Client"
-                : "Add Client"}
+                ? "Edit Employer"
+                : "Add Employer"}
             </h2>
 
             <div className="mb-6 space-y-4">
@@ -340,11 +421,11 @@ export default function Clients() {
                 <Input
                   value={name}
                   onChange={setName}
-                  placeholder="Client Name"
+                  placeholder="Hiring contact"
                 />
 
                 {errors.name && (
-                  <p className="mt-1 text-sm text-red-600">
+                  <p className="mt-1 text-sm text-black-600">
                     {errors.name}
                   </p>
                 )}
@@ -354,11 +435,11 @@ export default function Clients() {
                 <Input
                   value={company}
                   onChange={setCompany}
-                  placeholder="Company Name"
+                  placeholder="Employer company"
                 />
 
                 {errors.company && (
-                  <p className="mt-1 text-sm text-red-600">
+                  <p className="mt-1 text-sm text-black-600">
                     {errors.company}
                   </p>
                 )}
@@ -372,7 +453,7 @@ export default function Clients() {
                 />
 
                 {errors.email && (
-                  <p className="mt-1 text-sm text-red-600">
+                  <p className="mt-1 text-sm text-black-600">
                     {errors.email}
                   </p>
                 )}
@@ -399,8 +480,8 @@ export default function Clients() {
                 onClick={handleAddClient}
               >
                 {editingClientId
-                  ? "Update Client"
-                  : "Save Client"}
+                  ? "Update Employer"
+                  : "Save Employer"}
               </Button>
             </div>
           </div>

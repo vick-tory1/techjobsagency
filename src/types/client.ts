@@ -4,4 +4,7 @@ export interface Client {
   company: string;
   email: string;
   status: "Active" | "Inactive";
+  owner?: string;
+  segment?: string;
+  budget?: number;
 }

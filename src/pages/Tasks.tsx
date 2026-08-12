@@ -1,31 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
-
-type Task = {
-  id: string;
-  title: string;
-  assignee: string;
-  status: "Pending" | "Completed";
-};
+import { useStoredList } from "../hooks/useStoredList";
+import type { Task } from "../types/workspace";
 
 export default function Tasks() {
-  const [tasks, setTasks] = useState<Task[]>(() => {
-    const savedTasks =
-      localStorage.getItem("flowpilot-tasks");
-
-    return savedTasks
-      ? JSON.parse(savedTasks)
-      : [
-          {
-            id: crypto.randomUUID(),
-            title: "Design Homepage",
-            assignee: "Sarah Johnson",
-            status: "Pending",
-          },
-        ];
-  });
+  const [tasks, setTasks] = useStoredList<Task>("flowpilot-tasks", []);
 
   const [taskTitle, setTaskTitle] =
     useState("");
@@ -43,13 +24,6 @@ export default function Tasks() {
     taskTitle: "",
     assignee: "",
   });
-
-  useEffect(() => {
-    localStorage.setItem(
-      "flowpilot-tasks",
-      JSON.stringify(tasks)
-    );
-  }, [tasks]);
 
   const resetForm = () => {
     setTaskTitle("");
@@ -103,9 +77,10 @@ export default function Tasks() {
         prev.map((task) =>
           task.id === editingId
             ? {
-                ...task,
-                title: taskTitle,
-                assignee,
+        ...task,
+        title: taskTitle,
+        assignee,
+        priority: task.priority ?? "Medium",
               }
             : task
         )
@@ -120,6 +95,7 @@ export default function Tasks() {
         title: taskTitle,
         assignee,
         status: "Pending",
+        priority: "Medium",
       };
 
       setTasks((prev) => [
@@ -158,9 +134,9 @@ export default function Tasks() {
           ? {
               ...task,
               status:
-                task.status === "Pending"
-                  ? "Completed"
-                  : "Pending",
+                task.status === "Completed"
+                  ? "Pending"
+                  : "Completed",
             }
           : task
       )
@@ -192,10 +168,11 @@ export default function Tasks() {
   };
 
   return (
-    <main className="p-4 md:p-8">
-      <h1 className="mb-8 text-3xl font-bold md:text-4xl">
-        Tasks
-      </h1>
+    <main className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-950 md:text-4xl">Applications</h1>
+        <p className="mt-2 text-gray-500">Track candidate screening work from profile review through interview and offer follow-up.</p>
+      </div>
 
       {message && (
         <div className="mb-6 rounded-lg bg-green-100 p-4 text-green-800">
@@ -203,11 +180,11 @@ export default function Tasks() {
         </div>
       )}
 
-      <div className="mb-8 rounded-xl border bg-white p-6">
+      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         <h2 className="mb-4 text-xl font-semibold">
           {editingId
             ? "Edit Task"
-            : "Add Task"}
+            : "Add Application Task"}
         </h2>
 
         <div className="space-y-4">
@@ -215,11 +192,11 @@ export default function Tasks() {
             <Input
               value={taskTitle}
               onChange={setTaskTitle}
-              placeholder="Task Title"
+              placeholder="Candidate workflow task"
             />
 
             {errors.taskTitle && (
-              <p className="mt-1 text-sm text-red-600">
+              <p className="mt-1 text-sm text-black-600">
                 {errors.taskTitle}
               </p>
             )}
@@ -229,11 +206,11 @@ export default function Tasks() {
             <Input
               value={assignee}
               onChange={setAssignee}
-              placeholder="Assigned To"
+              placeholder="Recruiter assigned"
             />
 
             {errors.assignee && (
-              <p className="mt-1 text-sm text-red-600">
+              <p className="mt-1 text-sm text-black-600">
                 {errors.assignee}
               </p>
             )}
@@ -245,7 +222,7 @@ export default function Tasks() {
             >
               {editingId
                 ? "Update Task"
-                : "Add Task"}
+                : "Add Application Task"}
             </Button>
 
             {editingId && (
@@ -260,16 +237,16 @@ export default function Tasks() {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border bg-white">
+      <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
         <table className="w-full min-w-[800px]">
           <thead>
-            <tr className="border-b bg-slate-50">
+            <tr className="border-b bg-gray-50">
               <th className="p-4 text-left">
-                Task
+                Application Work
               </th>
 
               <th className="p-4 text-left">
-                Assignee
+                Recruiter
               </th>
 
               <th className="p-4 text-left">
@@ -302,7 +279,7 @@ export default function Tasks() {
                       task.status ===
                       "Completed"
                         ? "rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700"
-                        : "rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-700"
+                        : "rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700"
                     }
                   >
                     {task.status}

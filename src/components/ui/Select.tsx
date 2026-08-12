@@ -19,7 +19,7 @@ export default function Select({
         py-3
         outline-none
         focus:ring-2
-        focus:ring-blue-500
+        focus:ring-green-500
       "
     >
       <option value="Active">

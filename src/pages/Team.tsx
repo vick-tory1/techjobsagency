@@ -1,37 +1,33 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
-
-type TeamMember = {
-  id: string;
-  name: string;
-  role: string;
-};
+import { useRegisteredUsers } from "../hooks/useAuth";
+import { useStoredList } from "../hooks/useStoredList";
+import type { TeamMember } from "../types/workspace";
 
 export default function Team() {
-  const [members, setMembers] = useState<TeamMember[]>(() => {
-    const savedMembers =
-      localStorage.getItem("flowpilot-team");
-
-    return savedMembers
-      ? JSON.parse(savedMembers)
-      : [
-          {
-            id: crypto.randomUUID(),
-            name: "Sarah Johnson",
-            role: "UI/UX Designer",
-          },
-          {
-            id: crypto.randomUUID(),
-            name: "Michael Smith",
-            role: "Frontend Developer",
-          },
-        ];
-  });
+  const [members, setMembers] = useStoredList<TeamMember>("flowpilot-team", []);
+  const registeredUsers = useRegisteredUsers();
+  const registeredRecruiters: TeamMember[] = registeredUsers
+    .filter((user) => user.role === "employer")
+    .map((user) => ({
+      id: `registered-${user.id}`,
+      name: user.name,
+      role: user.company ? `${user.company} Hiring Contact` : "Registered Hiring Contact",
+      capacity: 70,
+    }));
+  const visibleMembers = [
+    ...registeredRecruiters,
+    ...members.filter(
+      (member) =>
+        !registeredRecruiters.some((registeredMember) => registeredMember.name.toLowerCase() === member.name.toLowerCase())
+    ),
+  ];
 
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
+  const [capacity, setCapacity] = useState("");
 
   const [editingId, setEditingId] =
     useState<string | null>(null);
@@ -45,16 +41,10 @@ export default function Team() {
       role: "",
     });
 
-  useEffect(() => {
-    localStorage.setItem(
-      "flowpilot-team",
-      JSON.stringify(members)
-    );
-  }, [members]);
-
   const resetForm = () => {
     setName("");
     setRole("");
+    setCapacity("");
     setEditingId(null);
 
     setErrors({
@@ -100,9 +90,10 @@ export default function Team() {
         prev.map((member) =>
           member.id === editingId
             ? {
-                ...member,
-                name,
-                role,
+              ...member,
+              name,
+              role,
+              capacity: Number(capacity) || member.capacity || 70,
               }
             : member
         )
@@ -116,6 +107,7 @@ export default function Team() {
         id: crypto.randomUUID(),
         name,
         role,
+        capacity: Number(capacity) || 70,
       };
 
       setMembers((prev) => [
@@ -143,6 +135,7 @@ export default function Team() {
     setEditingId(member.id);
     setName(member.name);
     setRole(member.role);
+    setCapacity(String(member.capacity));
   };
 
   const handleDeleteMember = (
@@ -170,10 +163,11 @@ export default function Team() {
   };
 
   return (
-    <main className="p-4 md:p-8">
-      <h1 className="mb-8 text-3xl font-bold md:text-4xl">
-        Team
-      </h1>
+    <main className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-950 md:text-4xl">Recruiters</h1>
+        <p className="mt-2 text-gray-500">Registered employer contacts appear here automatically. Manual recruiter records remain available for internal hiring operations.</p>
+      </div>
 
       {message && (
         <div className="mb-6 rounded-lg bg-green-100 p-4 text-green-800">
@@ -181,11 +175,11 @@ export default function Team() {
         </div>
       )}
 
-      <div className="mb-8 rounded-xl border bg-white p-6">
+      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         <h2 className="mb-4 text-xl font-semibold">
           {editingId
-            ? "Edit Team Member"
-            : "Add Team Member"}
+            ? "Edit Recruiter"
+            : "Add Recruiter"}
         </h2>
 
         <div className="space-y-4">
@@ -193,11 +187,11 @@ export default function Team() {
             <Input
               value={name}
               onChange={setName}
-              placeholder="Member Name"
+              placeholder="Recruiter name"
             />
 
             {errors.name && (
-              <p className="mt-1 text-sm text-red-600">
+              <p className="mt-1 text-sm text-black-600">
                 {errors.name}
               </p>
             )}
@@ -211,10 +205,18 @@ export default function Team() {
             />
 
             {errors.role && (
-              <p className="mt-1 text-sm text-red-600">
+              <p className="mt-1 text-sm text-black-600">
                 {errors.role}
               </p>
             )}
+          </div>
+
+          <div>
+            <Input
+              value={capacity}
+              onChange={setCapacity}
+              placeholder="Capacity percentage"
+            />
           </div>
 
           <div className="flex flex-wrap gap-3">
@@ -222,8 +224,8 @@ export default function Team() {
               onClick={handleSaveMember}
             >
               {editingId
-                ? "Update Member"
-                : "Add Member"}
+                ? "Update Recruiter"
+                : "Add Recruiter"}
             </Button>
 
             {editingId && (
@@ -238,16 +240,20 @@ export default function Team() {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border bg-white">
+      <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
         <table className="w-full min-w-[700px]">
           <thead>
-            <tr className="border-b bg-slate-50">
+            <tr className="border-b bg-gray-50">
               <th className="p-4 text-left">
-                Name
+                Recruiter
               </th>
 
               <th className="p-4 text-left">
                 Role
+              </th>
+
+              <th className="p-4 text-left">
+                Capacity
               </th>
 
               <th className="p-4 text-left">
@@ -257,7 +263,7 @@ export default function Team() {
           </thead>
 
           <tbody>
-            {members.map((member) => (
+            {visibleMembers.map((member) => (
               <tr
                 key={member.id}
                 className="border-b"
@@ -271,28 +277,38 @@ export default function Team() {
                 </td>
 
                 <td className="p-4">
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      variant="secondary"
-                      onClick={() =>
-                        handleEditMember(
-                          member.id
-                        )
-                      }
-                    >
-                      Edit
-                    </Button>
+                  {member.capacity}%
+                </td>
 
-                    <Button
-                      variant="danger"
-                      onClick={() =>
-                        handleDeleteMember(
-                          member.id
-                        )
-                      }
-                    >
-                      Delete
-                    </Button>
+                <td className="p-4">
+                  <div className="flex flex-wrap gap-2">
+                    {member.id.startsWith("registered-") ? (
+                      <span className="rounded-full bg-green-50 px-3 py-1 text-sm font-semibold text-green-700">Registered</span>
+                    ) : (
+                      <>
+                        <Button
+                          variant="secondary"
+                          onClick={() =>
+                            handleEditMember(
+                              member.id
+                            )
+                          }
+                        >
+                          Edit
+                        </Button>
+
+                        <Button
+                          variant="danger"
+                          onClick={() =>
+                            handleDeleteMember(
+                              member.id
+                            )
+                          }
+                        >
+                          Delete
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </td>
               </tr>

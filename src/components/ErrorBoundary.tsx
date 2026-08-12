@@ -35,13 +35,13 @@ export default class ErrorBoundary extends React.Component<
               Something went wrong
             </h1>
 
-            <p className="mb-4 text-slate-600">
+            <p className="mb-4 text-gray-600">
               The application encountered an unexpected error.
             </p>
 
             <button
               onClick={() => window.location.reload()}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-white"
+              className="rounded-lg bg-green-600 px-4 py-2 text-white"
             >
               Reload Application
             </button>
