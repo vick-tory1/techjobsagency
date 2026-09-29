@@ -1,0 +1,52 @@
+[
+  {
+    "category": "Account",
+    "question": "How do I sign in or create an account?",
+    "answer": "Use the signup page to create a candidate or employer account. If you already have an account, use the login page with your email and password. You can also continue with Google during signup if that option is available."
+  },
+  {
+    "category": "Account",
+    "question": "I cannot access my account",
+    "answer": "Check your email and password first. If you were redirected or locked out, clear your browser cache and try again. If the issue continues, email support@techhire.market with the error message and the page you were on."
+  },
+  {
+    "category": "Jobs",
+    "question": "How do I find the right job for my skills?",
+    "answer": "Go to the Jobs page and filter by skill, work mode, location, or experience level. Each role includes the stack, seniority, salary range, and work arrangement so you can quickly decide if it is a fit."
+  },
+  {
+    "category": "Jobs",
+    "question": "How do I apply for a role?",
+    "answer": "Open a job listing, review the details, and click the application or role link. Make sure your profile includes your strongest skills and portfolio links so hiring teams can assess your fit quickly."
+  },
+  {
+    "category": "Profiles",
+    "question": "What should I include in my profile?",
+    "answer": "Add your most relevant technical skills, portfolio links, LinkedIn profile, location, and availability. Good profiles show proof of work, not just a job title."
+  },
+  {
+    "category": "Profiles",
+    "question": "Can I update my skills or portfolio later?",
+    "answer": "Yes. Update your profile anytime as your experience grows. Add new projects, remove outdated skills, and keep your availability and links current so the right opportunities find you."
+  },
+  {
+    "category": "Employers",
+    "question": "How do employers find talent?",
+    "answer": "Employers can browse candidate profiles, filter by skills and location, review portfolio proof, and shortlist the best match for their role. The employer dashboard helps manage postings and applications in one place."
+  },
+  {
+    "category": "Employers",
+    "question": "How do I post a job opening?",
+    "answer": "From the employer dashboard, go to the jobs section and create a new role. Add the title, company details, required skills, work mode, location, and salary range, then publish it for candidates to view."
+  },
+  {
+    "category": "Community",
+    "question": "What is the community for?",
+    "answer": "The community is a place to share roles, ask for feedback, request introductions, and get support from other members. It is useful for interviews, portfolio reviews, and finding the right opportunities."
+  },
+  {
+    "category": "Support",
+    "question": "Where do I get help if I need support?",
+    "answer": "You can use the support chat, email support@techhire.market, or contact us through the social channels listed on the support page. We are here to help with account, job, profile, and employer questions."
+  }
+]

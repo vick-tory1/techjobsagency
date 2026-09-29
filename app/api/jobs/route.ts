@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireRole } from "../../../lib/api-auth";
 import { createId, store } from "../../../lib/store";
 import type { Job } from "../../../lib/types";
 
@@ -24,20 +25,45 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const authResult = await requireRole(["employer", "admin"]);
+  if ("response" in authResult) return authResult.response;
+
   const payload = await request.json();
+  const salaryMin = Number(payload.salaryMin);
+  const salaryMax = Number(payload.salaryMax);
+  const salaryCurrency = typeof payload.salaryCurrency === "string" ? payload.salaryCurrency : "USD";
+  const salaryPeriod = typeof payload.salaryPeriod === "string" ? payload.salaryPeriod : "year";
+  const workplaceType = typeof payload.workplaceType === "string" ? payload.workplaceType : "remote";
+  const requiredFields = [payload.title, payload.description, payload.company, payload.experienceLevel, payload.employmentType, payload.location];
+
+  if (requiredFields.some((field) => typeof field !== "string" || !field.trim())) {
+    return NextResponse.json({ error: "Please complete the required job fields." }, { status: 400 });
+  }
+  if (!Number.isFinite(salaryMin) || !Number.isFinite(salaryMax) || salaryMin <= 0 || salaryMax < salaryMin) {
+    return NextResponse.json({ error: "Enter a valid salary range." }, { status: 400 });
+  }
+
   const now = new Date().toISOString();
+  const formattedMin = new Intl.NumberFormat("en-US", { style: "currency", currency: salaryCurrency, maximumFractionDigits: 0 }).format(salaryMin);
+  const formattedMax = new Intl.NumberFormat("en-US", { style: "currency", currency: salaryCurrency, maximumFractionDigits: 0 }).format(salaryMax);
   const job: Job = {
     id: createId("job"),
-    title: payload.title,
-    description: payload.description,
-    company: payload.company,
-    employerId: payload.employerId ?? "employer-1",
-    skills: payload.skills ?? [],
-    experienceLevel: payload.experienceLevel,
-    employmentType: payload.employmentType,
-    location: payload.location,
-    remote: Boolean(payload.remote),
-    salary: payload.salary,
+    title: payload.title.trim(),
+    description: payload.description.trim(),
+    company: payload.company.trim(),
+    employerId: authResult.user.id,
+    skills: Array.isArray(payload.skills) ? payload.skills.filter((skill) => typeof skill === "string" && skill.trim()) : [],
+    experienceLevel: payload.experienceLevel.trim(),
+    employmentType: payload.employmentType.trim(),
+    location: payload.location.trim(),
+    remote: workplaceType === "remote",
+    salary: `${formattedMin} - ${formattedMax} / ${salaryPeriod}`,
+    salaryMin,
+    salaryMax,
+    salaryCurrency,
+    salaryPeriod,
+    workplaceType,
+    applicationDeadline: typeof payload.applicationDeadline === "string" ? payload.applicationDeadline : undefined,
     status: payload.status ?? "open",
     createdAt: now,
     updatedAt: now,

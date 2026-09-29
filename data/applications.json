@@ -1,0 +1,12 @@
+[
+  {
+    "id": "application-1",
+    "jobId": "job-frontend-developer",
+    "applicantId": "talent-1",
+    "employerId": "employer-1",
+    "resumeProfile": "profile-talent-1",
+    "coverLetter": "I can help build the marketplace frontend with React, Next.js, and TypeScript.",
+    "submittedAt": "2026-08-08T09:00:00.000Z",
+    "status": "submitted"
+  }
+]

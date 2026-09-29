@@ -1,0 +1,35 @@
+[
+  {
+    "id": "profile-talent-1",
+    "userId": "talent-1",
+    "name": "Adams Ekpe",
+    "email": "talent@techhire.market",
+    "profilePicture": "/assets/candidate-engineer.webp",
+    "bio": "Frontend developer, graphic designer, and cyber security personnel building practical web products.",
+    "skills": [
+      "React",
+      "Next.js",
+      "TypeScript",
+      "Figma",
+      "Cybersecurity"
+    ],
+    "experience": [
+      "3+ years building responsive React applications",
+      "Portfolio and marketplace product experience"
+    ],
+    "education": [
+      "Technology and security training"
+    ],
+    "projects": [
+      "TechHire Market",
+      "Agency operations dashboard"
+    ],
+    "portfolioUrl": "https://example.com",
+    "socialLinks": {
+      "linkedin": "https://linkedin.com",
+      "x": "https://x.com"
+    },
+    "location": "Lagos, Nigeria",
+    "availability": "Open to interviews"
+  }
+]

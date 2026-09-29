@@ -1,10 +1,8 @@
-import { cookies } from "next/headers";
 import type { Role, User } from "./types";
+import { getPersistedSessionUser } from "./api-auth";
 
 export async function getSessionUser() {
-  const cookieStore = await cookies();
-  const session = cookieStore.get("techhire-session")?.value;
-  return session ? (JSON.parse(session) as User) : null;
+  return getPersistedSessionUser();
 }
 
 export async function requireRole(roles: Role[]) {

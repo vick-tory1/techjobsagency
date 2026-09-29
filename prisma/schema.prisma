@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  employer
+  talent
+  student
+  community
+}
+
+enum UserProvider {
+  google
+  credentials
+  password
+}
+
+enum JobStatus {
+  open
+  paused
+  closed
+}
+
+enum ApplicationStatus {
+  submitted
+  reviewing
+  shortlisted
+  interview
+  accepted
+  rejected
+}
+
+model User {
+  id             String        @id
+  googleId       String?       @unique
+  name           String
+  email          String        @unique
+  profilePicture String?
+  roles          Role[]
+  provider       UserProvider
+  employerVerified Boolean     @default(false)
+  passwordHash   String?
+  company        String?
+  primarySkill   String?
+  whatsapp       String?
+  facebook       String?
+  x              String?
+  linkedin       String?
+  portfolio      String?
+  jobs           Job[]         @relation("EmployerJobs")
+  profile        TalentProfile?
+  applications   Application[] @relation("ApplicantApplications")
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Job {
+  id                  String        @id
+  title               String
+  description         String
+  company             String
+  employerId          String
+  employer            User          @relation("EmployerJobs", fields: [employerId], references: [id], onDelete: Cascade)
+  skills              String[]
+  experienceLevel     String
+  employmentType      String
+  location            String
+  remote              Boolean
+  salary              String
+  salaryMin           Int?
+  salaryMax           Int?
+  salaryCurrency      String?
+  salaryPeriod        String?
+  workplaceType       String?
+  applicationDeadline DateTime?
+  status              JobStatus
+  applications        Application[]
+  createdAt           DateTime
+  updatedAt           DateTime
+
+  @@index([employerId])
+  @@index([status])
+}
+
+model TalentProfile {
+  id             String   @id
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  email          String
+  profilePicture String?
+  bio            String
+  skills         String[]
+  experience     String[]
+  education      String[]
+  projects       String[]
+  portfolioUrl   String?
+  socialLinks    Json
+  location       String
+  availability   String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Application {
+  id            String            @id
+  jobId         String
+  job           Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  applicantId   String
+  applicant     User              @relation("ApplicantApplications", fields: [applicantId], references: [id], onDelete: Cascade)
+  employerId    String
+  resumeProfile String
+  coverLetter   String
+  submittedAt   DateTime
+  status        ApplicationStatus
+
+  @@unique([jobId, applicantId])
+  @@index([applicantId])
+  @@index([employerId])
+  @@index([status])
+}

@@ -15,6 +15,12 @@ export type Job = {
   location: string;
   remote: boolean;
   salary: string;
+  salaryMin?: number;
+  salaryMax?: number;
+  salaryCurrency?: string;
+  salaryPeriod?: "year" | "month" | "hour" | "project";
+  workplaceType?: "remote" | "hybrid" | "onsite";
+  applicationDeadline?: string;
   status: JobStatus;
   createdAt: string;
   updatedAt: string;
@@ -37,6 +43,10 @@ export type TalentProfile = {
   availability: string;
 };
 
+export type PublicTalentProfile = Pick<TalentProfile,
+  "id" | "userId" | "name" | "profilePicture" | "bio" | "skills" | "projects" | "portfolioUrl" | "location" | "availability"
+>;
+
 export type Application = {
   id: string;
   jobId: string;
@@ -55,5 +65,14 @@ export type User = {
   email: string;
   profilePicture?: string;
   roles: Role[];
-  provider: "google" | "password";
+  provider: "google" | "credentials" | "password";
+  employerVerified?: boolean;
+  passwordHash?: string;
+  company?: string;
+  primarySkill?: string;
+  whatsapp?: string;
+  facebook?: string;
+  x?: string;
+  linkedin?: string;
+  portfolio?: string;
 };

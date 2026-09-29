@@ -1,73 +1,63 @@
-# React + TypeScript + Vite
+# Flowpilot
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Next.js application for a two-sided technology recruitment and job marketplace.
 
-Currently, two official plugins are available:
+## What Flowpilot includes
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Public job discovery, marketplace stories, community, and support pages.
+- Job Seeker registration, profiles, job applications, and application tracking.
+- Employer registration, company profiles, job posting, applicant review, and talent browsing.
+- A separate admin sign-in and marketplace oversight area.
+- Optional Google sign-in and an optional AI-assisted support chat.
 
-## React Compiler
+## Scripts
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- `npm run dev` starts the Next.js development server.
+- `npm run build` creates a production build.
+- `npm run start` runs the production server after a build.
+- `npm run lint` checks the codebase with ESLint.
+- `npm test` runs the Vitest test suite.
+- `npm run test:coverage` runs the test suite with coverage reporting.
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- `app/` contains Next.js App Router pages and API routes.
+- `components/` contains shared marketplace UI.
+- `lib/` contains server-side data, session, and domain helpers.
+- `data/` contains local JSON seed data.
+- `public/` contains static images and icons.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Environment
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Copy `.env.example` to `.env.local` and supply the required local values. Do not commit `.env.local`.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npx prisma generate
+npx prisma migrate dev
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Required values:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- `DATABASE_URL`: PostgreSQL connection string.
+- `AUTH_SECRET`: a long, random secret used for authentication.
+- `AUTH_URL`: the base URL of the running application.
+- `ADMIN_NAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD`: credentials for the dedicated admin account.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Google sign-in is optional. Set either `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET`, or `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, and register the callback URL shown in `.env.example`.
+
+### Support chat
+
+Set `GEMINI_API_KEY` in `.env.local` to enable AI-assisted replies on the support page. The server uses its built-in, finite free-tier model sequence and automatically moves to the next option once for quota, rate-limit, timeout, or temporary-availability failures. It never exposes provider errors or credentials to visitors.
+
+If no model can answer, support still returns a local, Flowpilot-specific reply based on the visitor's latest message. Chat history, authentication, and the client response format remain unchanged.
+
+## Verification
+
+```bash
+npm run lint
+npx tsc --noEmit
+npm test
+npm run build
 ```

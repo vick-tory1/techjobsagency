@@ -1,0 +1,30 @@
+[
+  {
+    "id": "admin-1",
+    "name": "Adams Ekpe",
+    "email": "adamsekpe2@gmail.com",
+    "roles": [
+      "admin"
+    ],
+    "provider": "credentials"
+  },
+  {
+    "id": "talent-1",
+    "name": "Adams Ekpe",
+    "email": "talent@techhire.market",
+    "profilePicture": "/assets/candidate-engineer.webp",
+    "roles": [
+      "talent"
+    ],
+    "provider": "password"
+  },
+  {
+    "id": "employer-1",
+    "name": "Hiring Lead",
+    "email": "employer@techhire.market",
+    "roles": [
+      "employer"
+    ],
+    "provider": "password"
+  }
+]

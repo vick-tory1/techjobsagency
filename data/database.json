@@ -1,0 +1,336 @@
+{
+  "users": [
+    {
+      "id": "admin-1",
+      "name": "Adams Ekpe",
+      "email": "adamsekpe2@gmail.com",
+      "roles": [
+        "admin"
+      ],
+      "provider": "credentials",
+      "passwordHash": "$argon2id$v=19$m=65536,p=4,t=3$HDHirEfeTrGqjIEL8/Rt5w$Mg4cvYrh3oL0vZ50Y8IrmtYS51E7YD7YZac3hifzjY4",
+      "googleId": "0a914566-9a1b-48e0-8281-94101de3d228",
+      "profilePicture": "https://lh3.googleusercontent.com/a/ACg8ocI8Tzt0UUGqA4fPMsN1H960OShtKUBtfbUQBit4AjyrvP1RzA=s96-c"
+    },
+    {
+      "id": "talent-1",
+      "name": "Adams Ekpe",
+      "email": "talent@techhire.market",
+      "profilePicture": "/assets/candidate-engineer.webp",
+      "roles": [
+        "talent"
+      ],
+      "provider": "password"
+    },
+    {
+      "id": "employer-1",
+      "name": "Hiring Lead",
+      "email": "employer@techhire.market",
+      "roles": [
+        "employer"
+      ],
+      "provider": "password"
+    }
+  ],
+  "jobs": [
+    {
+      "id": "job-frontend-developer",
+      "title": "Frontend Developer",
+      "description": "Build polished marketplace interfaces with React, Next.js, TypeScript, accessibility checks, responsive layouts, and performance budgets that make candidate and employer workflows feel fast.",
+      "company": "Example Company",
+      "employerId": "employer-1",
+      "skills": [
+        "React",
+        "Next.js",
+        "TypeScript",
+        "Accessibility"
+      ],
+      "experienceLevel": "Mid-level",
+      "employmentType": "Full-time",
+      "location": "Lagos, Nigeria",
+      "remote": true,
+      "salary": "$45,000 - $75,000",
+      "status": "open",
+      "createdAt": "2026-08-01T09:00:00.000Z",
+      "updatedAt": "2026-08-01T09:00:00.000Z"
+    },
+    {
+      "id": "job-devops-engineer",
+      "title": "DevOps Engineer",
+      "description": "Own deployment pipelines, Docker workflows, monitoring, release automation, and AWS infrastructure for client platforms that need stable production delivery.",
+      "company": "CloudBridge Labs",
+      "employerId": "employer-1",
+      "skills": [
+        "AWS",
+        "Docker",
+        "DevOps",
+        "Git"
+      ],
+      "experienceLevel": "Senior",
+      "employmentType": "Contract",
+      "location": "Remote",
+      "remote": true,
+      "salary": "$70/hour",
+      "status": "open",
+      "createdAt": "2026-08-05T09:00:00.000Z",
+      "updatedAt": "2026-08-05T09:00:00.000Z"
+    },
+    {
+      "id": "job-backend-api-engineer",
+      "title": "Backend API Engineer",
+      "description": "Design reliable APIs, database models, authentication flows, and background jobs for hiring tools where data accuracy and clear audit trails matter.",
+      "company": "Northstar Systems",
+      "employerId": "employer-1",
+      "skills": [
+        "Node.js",
+        "PostgreSQL",
+        "REST APIs",
+        "Authentication"
+      ],
+      "experienceLevel": "Mid-level",
+      "employmentType": "Full-time",
+      "location": "London, United Kingdom",
+      "remote": true,
+      "salary": "$80,000 - $115,000",
+      "status": "open",
+      "createdAt": "2026-08-06T09:00:00.000Z",
+      "updatedAt": "2026-08-06T09:00:00.000Z"
+    },
+    {
+      "id": "job-data-analyst",
+      "title": "Data Analyst",
+      "description": "Turn marketplace activity into dashboards that explain application volume, role demand, skill gaps, candidate readiness, and employer response patterns.",
+      "company": "DataNest",
+      "employerId": "employer-1",
+      "skills": [
+        "SQL",
+        "Power BI",
+        "Analytics",
+        "Excel"
+      ],
+      "experienceLevel": "Junior",
+      "employmentType": "Full-time",
+      "location": "Abuja, Nigeria",
+      "remote": false,
+      "salary": "$30,000 - $55,000",
+      "status": "open",
+      "createdAt": "2026-08-07T09:00:00.000Z",
+      "updatedAt": "2026-08-07T09:00:00.000Z"
+    },
+    {
+      "id": "job-ai-engineer",
+      "title": "AI Engineer",
+      "description": "Build retrieval, evaluation, and automation features for recruiting workflows while documenting model behavior, data quality, and human review points.",
+      "company": "BluePeak AI",
+      "employerId": "employer-1",
+      "skills": [
+        "Python",
+        "LLMs",
+        "Vector Search",
+        "Evaluation"
+      ],
+      "experienceLevel": "Senior",
+      "employmentType": "Full-time",
+      "location": "Remote",
+      "remote": true,
+      "salary": "$120,000 - $170,000",
+      "status": "open",
+      "createdAt": "2026-08-08T09:00:00.000Z",
+      "updatedAt": "2026-08-08T09:00:00.000Z"
+    },
+    {
+      "id": "job-cyber-security-analyst",
+      "title": "Cyber Security Analyst",
+      "description": "Monitor alerts, review access patterns, improve incident notes, and help product teams protect applicant, employer, and marketplace account data.",
+      "company": "SecurePath",
+      "employerId": "employer-1",
+      "skills": [
+        "Cyber Security",
+        "SIEM",
+        "Linux",
+        "Incident Response"
+      ],
+      "experienceLevel": "Mid-level",
+      "employmentType": "Full-time",
+      "location": "Hybrid - Lagos, Nigeria",
+      "remote": false,
+      "salary": "$55,000 - $90,000",
+      "status": "open",
+      "createdAt": "2026-08-09T09:00:00.000Z",
+      "updatedAt": "2026-08-09T09:00:00.000Z"
+    },
+    {
+      "id": "job-product-designer",
+      "title": "Product Designer",
+      "description": "Design candidate, employer, and admin flows that make job discovery, profile review, application status, and account setup easy to understand.",
+      "company": "PixelForge",
+      "employerId": "employer-1",
+      "skills": [
+        "Figma",
+        "UX",
+        "Design Systems",
+        "Prototyping"
+      ],
+      "experienceLevel": "Mid-level",
+      "employmentType": "Contract",
+      "location": "Remote",
+      "remote": true,
+      "salary": "$60/hour",
+      "status": "open",
+      "createdAt": "2026-08-10T09:00:00.000Z",
+      "updatedAt": "2026-08-10T09:00:00.000Z"
+    },
+    {
+      "id": "job-qa-automation-engineer",
+      "title": "QA Automation Engineer",
+      "description": "Create repeatable browser, API, and regression tests for signup, Google auth, job posting, applications, and profile updates across device sizes.",
+      "company": "LaunchGrid",
+      "employerId": "employer-1",
+      "skills": [
+        "Playwright",
+        "Testing",
+        "TypeScript",
+        "CI/CD"
+      ],
+      "experienceLevel": "Mid-level",
+      "employmentType": "Full-time",
+      "location": "Remote",
+      "remote": true,
+      "salary": "$70,000 - $100,000",
+      "status": "open",
+      "createdAt": "2026-08-11T09:00:00.000Z",
+      "updatedAt": "2026-08-11T09:00:00.000Z"
+    },
+    {
+      "id": "job-mobile-engineer",
+      "title": "Mobile Engineer",
+      "description": "Build mobile hiring and candidate profile experiences with clean navigation, reliable forms, push-ready workflows, and accessible account controls.",
+      "company": "OrbitOps",
+      "employerId": "employer-1",
+      "skills": [
+        "React Native",
+        "Flutter",
+        "Mobile UX",
+        "APIs"
+      ],
+      "experienceLevel": "Senior",
+      "employmentType": "Full-time",
+      "location": "New York, United States",
+      "remote": true,
+      "salary": "$110,000 - $150,000",
+      "status": "open",
+      "createdAt": "2026-08-12T09:00:00.000Z",
+      "updatedAt": "2026-08-12T09:00:00.000Z"
+    },
+    {
+      "id": "job-product-manager",
+      "title": "Technical Product Manager",
+      "description": "Shape roadmap, user stories, acceptance criteria, and release priorities for a marketplace serving candidates, employers, students, and communities.",
+      "company": "Cedar Labs",
+      "employerId": "employer-1",
+      "skills": [
+        "Product Management",
+        "Analytics",
+        "Roadmaps",
+        "Agile"
+      ],
+      "experienceLevel": "Lead",
+      "employmentType": "Full-time",
+      "location": "Hybrid - Toronto, Canada",
+      "remote": false,
+      "salary": "$115,000 - $155,000",
+      "status": "open",
+      "createdAt": "2026-08-13T09:00:00.000Z",
+      "updatedAt": "2026-08-13T09:00:00.000Z"
+    },
+    {
+      "id": "job-cloud-architect",
+      "title": "Cloud Architect",
+      "description": "Plan secure cloud foundations, cost controls, identity boundaries, deployment environments, and observability standards for scaling marketplace systems.",
+      "company": "Acme Cloud",
+      "employerId": "employer-1",
+      "skills": [
+        "AWS",
+        "Azure",
+        "Terraform",
+        "Architecture"
+      ],
+      "experienceLevel": "Lead",
+      "employmentType": "Contract",
+      "location": "Remote",
+      "remote": true,
+      "salary": "$95/hour",
+      "status": "open",
+      "createdAt": "2026-08-14T09:00:00.000Z",
+      "updatedAt": "2026-08-14T09:00:00.000Z"
+    },
+    {
+      "id": "job-wordpress-laravel-engineer",
+      "title": "PHP and Laravel Engineer",
+      "description": "Maintain business websites, admin panels, integrations, and content workflows for teams that need dependable PHP, Laravel, WordPress, and MySQL delivery.",
+      "company": "Flowbyte",
+      "employerId": "employer-1",
+      "skills": [
+        "PHP",
+        "Laravel",
+        "WordPress",
+        "MySQL"
+      ],
+      "experienceLevel": "Mid-level",
+      "employmentType": "Full-time",
+      "location": "Accra, Ghana",
+      "remote": true,
+      "salary": "$40,000 - $72,000",
+      "status": "open",
+      "createdAt": "2026-08-15T09:00:00.000Z",
+      "updatedAt": "2026-08-15T09:00:00.000Z"
+    }
+  ],
+  "applications": [
+    {
+      "id": "application-1",
+      "jobId": "job-frontend-developer",
+      "applicantId": "talent-1",
+      "employerId": "employer-1",
+      "resumeProfile": "profile-talent-1",
+      "coverLetter": "I can help build the marketplace frontend with React, Next.js, and TypeScript.",
+      "submittedAt": "2026-08-08T09:00:00.000Z",
+      "status": "submitted"
+    }
+  ],
+  "talent": [
+    {
+      "id": "profile-talent-1",
+      "userId": "talent-1",
+      "name": "Adams Ekpe",
+      "email": "talent@techhire.market",
+      "profilePicture": "/assets/candidate-engineer.webp",
+      "bio": "Frontend developer, graphic designer, and cyber security personnel building practical web products.",
+      "skills": [
+        "React",
+        "Next.js",
+        "TypeScript",
+        "Figma",
+        "Cybersecurity"
+      ],
+      "experience": [
+        "3+ years building responsive React applications",
+        "Portfolio and marketplace product experience"
+      ],
+      "education": [
+        "Technology and security training"
+      ],
+      "projects": [
+        "TechHire Market",
+        "Agency operations dashboard"
+      ],
+      "portfolioUrl": "https://example.com",
+      "socialLinks": {
+        "linkedin": "https://linkedin.com",
+        "x": "https://x.com"
+      },
+      "location": "Lagos, Nigeria",
+      "availability": "Open to interviews"
+    }
+  ]
+}

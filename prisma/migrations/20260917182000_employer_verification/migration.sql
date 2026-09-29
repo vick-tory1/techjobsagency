@@ -1,0 +1,1 @@
+ALTER TABLE "User" ADD COLUMN "employerVerified" BOOLEAN NOT NULL DEFAULT false;
