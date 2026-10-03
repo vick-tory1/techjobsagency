@@ -9,7 +9,13 @@ export async function middleware(request: NextRequest) {
   const route = protectedRoutes.find((prefix) => request.nextUrl.pathname.startsWith(prefix));
   if (!route) return NextResponse.next();
 
-  const token = await getToken({ req: request, secret: process.env.AUTH_SECRET || "flowpilot-local-development-secret-change-before-production" });
+  let token = null;
+  try {
+    token = await getToken({ req: request, secret: process.env.AUTH_SECRET || "flowpilot-local-development-secret-change-before-production" });
+  } catch {
+    // A token encrypted with a previous secret is not a valid session.
+    token = null;
+  }
   if (!token || typeof token.exp !== "number" || token.exp * 1000 <= Date.now()) {
     const loginPath = request.nextUrl.pathname.startsWith("/admin") ? "/admin/login" : "/login";
     return NextResponse.redirect(new URL(`${loginPath}?callbackUrl=${encodeURIComponent(request.nextUrl.pathname)}`, request.url));

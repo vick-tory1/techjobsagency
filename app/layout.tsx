@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { Session } from "next-auth";
 import { auth } from "../auth";
 import ScrollReveal from "../components/marketplace/ScrollReveal";
 import SessionExpiryGuard from "../components/marketplace/SessionExpiryGuard";
@@ -25,13 +26,22 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const session = await auth();
+  let session: Session | null = null;
+  let hasInvalidSession = false;
+
+  try {
+    session = await auth();
+  } catch {
+    // An AUTH_SECRET change makes existing JWT cookies unreadable. Treat that
+    // cookie as a signed-out visitor instead of failing every public page.
+    hasInvalidSession = true;
+  }
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
         <ScrollReveal />
-        <SessionExpiryGuard expiresAt={session?.expires} />
+        <SessionExpiryGuard expiresAt={session?.expires} hasInvalidSession={hasInvalidSession} />
         {children}
       </body>
     </html>

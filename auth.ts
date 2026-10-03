@@ -19,6 +19,10 @@ export const SESSION_MAX_AGE_SECONDS = 60 * 60 * 8;
 
 export const isGoogleAuthConfigured = Boolean(googleClientId && googleClientSecret);
 
+function isJwtSessionError(error: Error) {
+  return "type" in error && error.type === "JWTSessionError";
+}
+
 declare module "next-auth" {
   interface Session {
     user: {
@@ -207,6 +211,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: authSecret,
   session: { strategy: "jwt", maxAge: SESSION_MAX_AGE_SECONDS },
   jwt: { maxAge: SESSION_MAX_AGE_SECONDS },
+  logger: {
+    error(error) {
+      // Auth.js already removes an unreadable JWT cookie. This commonly occurs
+      // once after AUTH_SECRET changes, so treat that visitor as signed out
+      // without surfacing a development error overlay.
+      if (isJwtSessionError(error)) {
+        if (process.env.NODE_ENV === "production") {
+          console.warn("[auth] Discarded an unreadable session cookie; the visitor must sign in again.");
+        }
+        return;
+      }
+      console.error(error);
+    },
+  },
   pages: {
     signIn: "/login",
   },

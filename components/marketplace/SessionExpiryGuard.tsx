@@ -3,8 +3,15 @@
 import { signOut } from "next-auth/react";
 import { useEffect } from "react";
 
-export default function SessionExpiryGuard({ expiresAt }: { expiresAt?: string }) {
+export default function SessionExpiryGuard({ expiresAt, hasInvalidSession = false }: { expiresAt?: string; hasInvalidSession?: boolean }) {
   useEffect(() => {
+    if (hasInvalidSession) {
+      void signOut({ redirect: false }).finally(() => {
+        window.location.replace("/login?expired=1");
+      });
+      return;
+    }
+
     const expiry = expiresAt ? Date.parse(expiresAt) : Number.NaN;
     if (!Number.isFinite(expiry)) return;
 
@@ -21,7 +28,7 @@ export default function SessionExpiryGuard({ expiresAt }: { expiresAt?: string }
 
     const timeout = window.setTimeout(expireSession, remaining);
     return () => window.clearTimeout(timeout);
-  }, [expiresAt]);
+  }, [expiresAt, hasInvalidSession]);
 
   return null;
 }

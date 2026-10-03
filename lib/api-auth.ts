@@ -1,11 +1,18 @@
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
+import type { Session } from "next-auth";
 import { auth } from "../auth";
 import { store } from "./store";
 import type { Role } from "./types";
 
 export async function getPersistedSessionUser() {
-  const session = await auth();
+  let session: Session | null = null;
+  try {
+    session = await auth();
+  } catch {
+    // A cookie created with an older AUTH_SECRET is equivalent to no session.
+    return null;
+  }
   const expiresAt = session?.expires ? Date.parse(session.expires) : Number.NaN;
   if (!session?.user?.id || !session.user.email || !Number.isFinite(expiresAt) || expiresAt <= Date.now()) return null;
 

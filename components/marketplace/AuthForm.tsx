@@ -62,7 +62,7 @@ function authContent(role: AuthRole, isSignup: boolean): AuthContent {
       proof: "Review applications, keep your profile current, and arrive prepared for each employer conversation.",
       sideTitle: "Keep your job search moving with purpose.",
       sideBody: "Return to the applications, opportunities, and profile details that help you make a well-informed next move.",
-      media: { type: "gif", src: "/assets/terminal-prompt.gif", alt: "Animated terminal prompt representing a job seeker returning to technical work" },
+      media: { type: "gif", src: "/assets/job-seeker-tech.gif", alt: "Animated developer working at a laptop with code on screen" },
       highlights: ["Application status in one place", "Portfolio and profile controls", "Roles matched to your skills"],
     },
     "employer-signup": {
@@ -92,7 +92,7 @@ function authContent(role: AuthRole, isSignup: boolean): AuthContent {
       proof: "See the roles you are running, compare job seekers against the brief, and keep reviews moving with your team.",
       sideTitle: "Hiring decisions are easier when the evidence is close.",
       sideBody: "Come back to a workspace built around the role, the job seeker, and the decision your team needs to make.",
-      media: { type: "image", src: "/assets/executive-hiring-brief.jpg", alt: "Hiring leader reviewing a technical role brief" },
+      media: { type: "image", src: "/assets/employer-login.jpg", alt: "Hiring team collaborating around a laptop" },
       highlights: ["Active roles and job seeker reviews", "Portfolio-led shortlisting", "Clear application decisions"],
     },
   };
@@ -102,10 +102,14 @@ function authContent(role: AuthRole, isSignup: boolean): AuthContent {
 
 function AuthMedia({ media }: { media: Media }) {
   if (media.type === "video") {
-    return <LazyVideo src={media.src} poster={media.poster} label={media.alt} autoPlay className="absolute inset-0 h-full w-full" />;
+    return <LazyVideo src={media.src} poster={media.poster} label={media.alt} autoPlay className="absolute inset-0 z-0 h-full w-full" />;
   }
 
-  return <Image src={media.src} alt={media.alt} fill unoptimized={media.type === "gif"} sizes="(min-width: 1024px) 42vw, 100vw" className={media.type === "gif" ? "absolute inset-0 h-full w-full object-contain p-10" : "absolute inset-0 object-cover"} />;
+  if (media.type === "gif") {
+    return <Image src={media.src} alt={media.alt} fill unoptimized sizes="(min-width: 1024px) 42vw, 100vw" className="absolute inset-0 z-0 h-full w-full object-cover" />;
+  }
+
+  return <img src={media.src} alt={media.alt} className="absolute inset-0 z-0 h-full w-full object-cover" />;
 }
 
 export default function AuthForm() {
@@ -214,19 +218,19 @@ export default function AuthForm() {
   return (
     <main className="min-h-screen bg-[#f6f7fb] px-4 py-6 text-gray-950 lg:py-10">
       <div className="mx-auto grid max-w-6xl overflow-hidden rounded-lg border border-gray-200 bg-white shadow-xl lg:min-h-[720px] lg:grid-cols-[0.9fr_1.1fr]">
-        <aside className="relative isolate flex min-h-[410px] flex-col overflow-hidden bg-emerald-950 p-6 text-white md:p-8">
+        <aside className="relative isolate flex min-h-[410px] flex-col overflow-hidden bg-white p-6 text-white md:p-8">
           <AuthMedia media={roleContent.media} />
-          <div className="absolute inset-0 -z-10 bg-emerald-950/75" />
-          <div className="relative z-10">
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
+          <div className="relative z-20">
             <Link href="/" className="text-sm font-bold text-green-200 hover:text-white">Back to Flowpilot</Link>
             <p className="mt-10 text-xs font-bold uppercase tracking-[0.16em] text-green-200">{roleContent.eyebrow}</p>
             <h1 className="mt-3 max-w-md text-3xl font-black leading-tight md:text-4xl">{roleContent.sideTitle}</h1>
             <p className="mt-4 max-w-md text-sm leading-6 text-gray-200">{roleContent.sideBody}</p>
           </div>
-          <div className="relative z-10 mt-auto pt-8">
+          <div className="relative z-20 mt-auto pt-8">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-green-200">Built for this moment</p>
             <div className="mt-3 grid gap-2">
-              {roleContent.highlights.map((item) => <p key={item} className="border border-white/15 bg-emerald-950/45 px-3 py-2.5 text-sm font-semibold text-gray-100 backdrop-blur-sm">{item}</p>)}
+              {roleContent.highlights.map((item) => <p key={item} className="border border-white/25 bg-white/15 px-3 py-2.5 text-sm font-semibold text-white backdrop-blur-sm">{item}</p>)}
             </div>
           </div>
         </aside>
