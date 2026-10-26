@@ -214,8 +214,16 @@ async function loginAdmin(credentials: Partial<Record<string, unknown>>) {
 
   console.info("[admin-auth] Credential check passed; ensuring admin user.");
 
+  try {
   const admin = await ensureAdminUser({ password: adminPassword, provider: "credentials" });
+  console.info("[admin-auth] Admin user ensured successfully.");
   return admin;
+} catch (error) {
+  console.error("[admin-auth] Admin user setup failed:", error instanceof Error
+    ? { name: error.name, message: error.message, stack: error.stack }
+    : String(error));
+  throw error;
+}
 }
 
 
