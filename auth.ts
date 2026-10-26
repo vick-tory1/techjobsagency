@@ -13,7 +13,7 @@ if (process.env.NODE_ENV === "production" && !process.env.AUTH_SECRET) {
   throw new Error("AUTH_SECRET must be set in production.");
 }
 const authSecret = process.env.AUTH_SECRET ?? "flowpilot-local-development-secret-change-before-production";
-const adminEmail = process.env.ADMIN_EMAIL?.toLowerCase() ?? "";
+const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase() ?? "";
 const adminPassword = process.env.ADMIN_PASSWORD;
 export const SESSION_MAX_AGE_SECONDS = 60 * 60 * 8;
 
@@ -197,14 +197,27 @@ export async function loginUser(credentials: Partial<Record<string, unknown>>) {
   return user;
 }
 
+
 async function loginAdmin(credentials: Partial<Record<string, unknown>>) {
   const email = typeof credentials.email === "string" ? credentials.email.trim().toLowerCase() : "";
   const password = typeof credentials.password === "string" ? credentials.password : "";
-  if (!adminEmail || !adminPassword || email !== adminEmail || password !== adminPassword) return null;
+
+  if (!adminEmail || !adminPassword || email !== adminEmail || password !== adminPassword) {
+    console.error("[admin-auth] Credential check failed", {
+      adminEmailConfigured: Boolean(adminEmail),
+      adminPasswordConfigured: Boolean(adminPassword),
+      emailMatches: Boolean(adminEmail) && email === adminEmail,
+      passwordMatches: Boolean(adminPassword) && password === adminPassword,
+    });
+    return null;
+  }
+
+  console.info("[admin-auth] Credential check passed; ensuring admin user.");
 
   const admin = await ensureAdminUser({ password: adminPassword, provider: "credentials" });
   return admin;
 }
+
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
