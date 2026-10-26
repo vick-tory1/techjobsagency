@@ -3,12 +3,11 @@
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import PasswordInput from "./PasswordInput";
 
 export default function AdminLoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,8 +33,11 @@ export default function AdminLoginForm() {
       return;
     }
 
-    router.push(searchParams.get("callbackUrl") || "/admin");
-    router.refresh();
+    const callbackUrl = searchParams.get("callbackUrl");
+    const destination = callbackUrl?.startsWith("/") && !callbackUrl.startsWith("//") ? callbackUrl : "/admin";
+    // A full navigation guarantees the browser presents the freshly issued
+    // Auth.js session cookie to middleware before rendering the admin route.
+    window.location.assign(destination);
   }
 
   async function continueWithGoogle() {
