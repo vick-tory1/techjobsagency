@@ -14,11 +14,37 @@ export type Database = {
 const dataDir = path.join(process.cwd(), "data");
 const databasePath = path.join(dataDir, "database.json");
 const hasDatabaseUrl = Boolean(process.env.DATABASE_URL);
+let useRemoteDatabase = hasDatabaseUrl;
 
 function assertPersistenceMode() {
   if (!hasDatabaseUrl && process.env.NODE_ENV === "production") {
     throw new Error("DATABASE_URL is required in production. Filesystem persistence is development/test only.");
   }
+}
+
+function canFallbackToLocalDatabase(error: unknown) {
+  if (process.env.NODE_ENV === "production") return false;
+  if (!error || typeof error !== "object") return false;
+
+  const code = "code" in error ? error.code : undefined;
+  const name = "name" in error ? error.name : undefined;
+  return code === "P1000" || code === "P1001" || code === "P1017" || name === "PrismaClientInitializationError";
+}
+
+async function readLocalDatabase(): Promise<Database> {
+  await fs.mkdir(dataDir, { recursive: true });
+  try {
+    return JSON.parse(await fs.readFile(databasePath, "utf8")) as Database;
+  } catch {
+    const created = await initialDatabase();
+    await writeLocalDatabase(created);
+    return created;
+  }
+}
+
+async function writeLocalDatabase(database: Database) {
+  await fs.mkdir(dataDir, { recursive: true });
+  await fs.writeFile(databasePath, JSON.stringify(database, null, 2));
 }
 
 function mapUser(user: {
@@ -138,34 +164,34 @@ async function initialDatabase(): Promise<Database> {
 
 export async function readDatabase() {
   assertPersistenceMode();
-  if (hasDatabaseUrl) {
-    const [users, jobs, applications, talent] = await Promise.all([
-      prisma.user.findMany({ orderBy: { createdAt: "desc" } }),
-      prisma.job.findMany({ orderBy: { createdAt: "desc" } }),
-      prisma.application.findMany({ orderBy: { submittedAt: "desc" } }),
-      prisma.talentProfile.findMany({ orderBy: { createdAt: "desc" } }),
-    ]);
-    return {
-      users: users.map(mapUser),
-      jobs: jobs.map(mapJob),
-      applications: applications.map(mapApplication),
-      talent: talent.map(mapTalent),
-    };
+  if (useRemoteDatabase) {
+    try {
+      const [users, jobs, applications, talent] = await Promise.all([
+        prisma.user.findMany({ orderBy: { createdAt: "desc" } }),
+        prisma.job.findMany({ orderBy: { createdAt: "desc" } }),
+        prisma.application.findMany({ orderBy: { submittedAt: "desc" } }),
+        prisma.talentProfile.findMany({ orderBy: { createdAt: "desc" } }),
+      ]);
+      return {
+        users: users.map(mapUser),
+        jobs: jobs.map(mapJob),
+        applications: applications.map(mapApplication),
+        talent: talent.map(mapTalent),
+      };
+    } catch (error) {
+      if (!canFallbackToLocalDatabase(error)) throw error;
+      useRemoteDatabase = false;
+      console.warn("[database] Remote database is unavailable; using local development data.");
+    }
   }
-  await fs.mkdir(dataDir, { recursive: true });
-  try {
-    return JSON.parse(await fs.readFile(databasePath, "utf8")) as Database;
-  } catch {
-    const created = await initialDatabase();
-    await writeDatabase(created);
-    return created;
-  }
+  return readLocalDatabase();
 }
 
 export async function writeDatabase(database: Database) {
   assertPersistenceMode();
-  if (hasDatabaseUrl) {
-    await prisma.$transaction(async (tx) => {
+  if (useRemoteDatabase) {
+    try {
+      await prisma.$transaction(async (tx) => {
       for (const user of database.users) {
         await tx.user.upsert({
           where: { id: user.id },
@@ -210,11 +236,15 @@ export async function writeDatabase(database: Database) {
       await tx.talentProfile.deleteMany({ where: { id: { notIn: database.talent.map((item) => item.id) } } });
       await tx.job.deleteMany({ where: { id: { notIn: database.jobs.map((item) => item.id) } } });
       await tx.user.deleteMany({ where: { id: { notIn: database.users.map((item) => item.id) } } });
-    });
-    return;
+      });
+      return;
+    } catch (error) {
+      if (!canFallbackToLocalDatabase(error)) throw error;
+      useRemoteDatabase = false;
+      console.warn("[database] Remote database is unavailable; saving to local development data.");
+    }
   }
-  await fs.mkdir(dataDir, { recursive: true });
-  await fs.writeFile(databasePath, JSON.stringify(database, null, 2));
+  await writeLocalDatabase(database);
 }
 
 export async function updateDatabase(updater: (database: Database) => Database) {

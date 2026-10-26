@@ -1,7 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { User } from "../lib/types";
 
 let users: User[] = [];
+const originalAdminEmail = process.env.ADMIN_EMAIL;
+process.env.ADMIN_EMAIL = "admin@example.com";
 
 vi.mock("next-auth", () => ({
   default: vi.fn(() => ({ handlers: {}, auth: vi.fn(), signIn: vi.fn(), signOut: vi.fn() })),
@@ -20,7 +22,12 @@ vi.mock("../lib/store", () => ({
   },
 }));
 
-const { SESSION_MAX_AGE_SECONDS, loginUser, signupUser, upsertGoogleUser } = await import("../auth");
+const { SESSION_MAX_AGE_SECONDS, ensureAdminUser, loginUser, signupUser, upsertGoogleUser } = await import("../auth");
+
+afterAll(() => {
+  if (originalAdminEmail === undefined) delete process.env.ADMIN_EMAIL;
+  else process.env.ADMIN_EMAIL = originalAdminEmail;
+});
 
 beforeEach(() => {
   users = [];
@@ -92,5 +99,28 @@ describe("credential account provisioning", () => {
     });
 
     expect(user?.roles).toEqual(["talent"]);
+  });
+
+  it("promotes the existing configured-email account instead of creating a duplicate admin user", async () => {
+    users = [{
+      id: "existing-account-id",
+      name: "Existing Account",
+      email: "admin@example.com",
+      roles: ["employer"],
+      provider: "credentials",
+      company: "Existing Company",
+    }];
+
+    const admin = await ensureAdminUser({ provider: "credentials" });
+
+    expect(admin.id).toBe("existing-account-id");
+    expect(admin.roles).toEqual(["employer", "admin"]);
+    expect(users).toHaveLength(1);
+    expect(users[0]).toMatchObject({
+      id: "existing-account-id",
+      email: "admin@example.com",
+      company: "Existing Company",
+      roles: ["employer", "admin"],
+    });
   });
 });

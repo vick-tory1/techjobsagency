@@ -76,16 +76,20 @@ function authPayload(user: AppUser) {
   };
 }
 
-async function ensureAdminUser(options: { password?: string; googleId?: string; profilePicture?: string | null; provider?: AppUser["provider"] } = {}) {
+export async function ensureAdminUser(options: { password?: string; googleId?: string; profilePicture?: string | null; provider?: AppUser["provider"] } = {}) {
   if (!adminEmail) {
     throw new Error("ADMIN_EMAIL must be set to use admin authentication.");
   }
   const users = await store.users();
-  const existing = users.find((item) => item.email.toLowerCase() === adminEmail && item.roles.includes("admin"));
+  // `email` is unique in Prisma. An account may predate the configured admin
+  // email or have been created through another provider, so always reuse the
+  // record that owns the email instead of creating a second user with `admin-1`.
+  const existing = users.find((item) => item.email.toLowerCase() === adminEmail);
   if (existing) {
     const updated: AppUser = {
       ...existing,
       name: process.env.ADMIN_NAME || existing.name || "Adams Ekpe",
+      roles: existing.roles.includes("admin") ? existing.roles : [...existing.roles, "admin"],
       googleId: options.googleId ?? existing.googleId,
       profilePicture: options.profilePicture ?? existing.profilePicture,
       provider: options.provider ?? existing.provider,
