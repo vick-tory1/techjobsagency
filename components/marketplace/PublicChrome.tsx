@@ -35,7 +35,7 @@ export function PublicHeader({ user }: { user?: User | null }) {
           <span className="grid h-10 w-10 place-items-center rounded-lg bg-green-600 font-black text-white">FP</span>
           <span className="min-w-0">
             <span className="block text-xl font-black tracking-tight">Flowpilot</span>
-            <span className="block text-xs font-semibold uppercase text-gray-500 sm:whitespace-nowrap">Technology hiring for real teams</span>
+            <span className="block text-xs font-semibold uppercase text-gray-500 sm:whitespace-nowrap">Technology recruitment</span>
           </span>
         </Link>
         <nav className="hidden items-center gap-2 text-sm font-semibold lg:flex">
@@ -59,7 +59,7 @@ export function PublicFooter({ user }: { user?: User | null }) {
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 md:grid-cols-[1.2fr_0.8fr_0.8fr] lg:px-8">
         <div>
           <p className="text-2xl font-black">Flowpilot</p>
-          <p className="mt-3 max-w-md leading-7 text-gray-300">Technical hiring made clear. Employers publish roles, talent shares evidence, and every conversation starts with real context.</p>
+          <p className="mt-3 max-w-md leading-7 text-gray-300">A technology recruitment platform for employers and candidates. Role briefs and technical profiles provide context for hiring decisions.</p>
           <p className="mt-5 text-sm font-semibold text-gray-400">(c) 2026 Flowpilot. All rights reserved.</p>
           <p className="mt-2 text-sm text-gray-400">For developers, designers, data analysts, cloud engineers, QA, security, and product people.</p>
         </div>

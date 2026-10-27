@@ -34,12 +34,12 @@ export default function CommunityForum() {
         <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-sm font-bold uppercase text-green-700">Community live room</p>
-              <h2 className="mt-2 text-3xl font-black">Quick help from people in the network</h2>
+              <p className="text-sm font-bold uppercase text-green-700">Community notes</p>
+              <h2 className="mt-2 text-3xl font-black">Share a short request or update</h2>
             </div>
             <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-bold text-green-800">{chat.length} local note{chat.length === 1 ? "" : "s"}</span>
           </div>
-          <p className="mt-4 leading-7 text-gray-600">Use the live room for short updates: share an opening, ask for a profile review, request an intro, or check who is ready for interviews.</p>
+          <p className="mt-4 leading-7 text-gray-600">Use this space for short updates, such as a role share, portfolio-review request, referral request, or interview-preparation question.</p>
           <div className="mt-6 space-y-3">
             {chat.length ? chat.map((message, index) => (
               <article key={`${message}-${index}`} className="rounded-lg bg-[#f8fafc] p-4">
@@ -55,9 +55,9 @@ export default function CommunityForum() {
         </div>
 
         <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-          <p className="text-sm font-bold uppercase text-green-700">Comments forum</p>
-          <h2 className="mt-2 text-3xl font-black">Detailed threads for useful feedback</h2>
-          <p className="mt-4 leading-7 text-gray-600">Use comments for anything that needs context: portfolio reviews, referral notes, interview preparation, training requests, and follow-up after applications.</p>
+          <p className="text-sm font-bold uppercase text-green-700">Discussion notes</p>
+          <h2 className="mt-2 text-3xl font-black">Add context for feedback</h2>
+          <p className="mt-4 leading-7 text-gray-600">Use a discussion note when the request needs context, links, or specific questions about a portfolio, interview, referral, or application.</p>
           <div className="mt-6 space-y-4">
             {comments.length ? comments.map((comment, index) => (
               <article key={`${comment}-${index}`} className="rounded-lg border border-gray-200 p-4">
@@ -68,7 +68,7 @@ export default function CommunityForum() {
             )) : prompts.map((prompt) => <article key={prompt} className="rounded-lg border border-dashed border-gray-300 p-4"><p className="leading-7 text-gray-600">{prompt}</p></article>)}
           </div>
           <textarea value={commentText} onChange={(event) => setCommentText(event.target.value)} placeholder="Add context, links, questions, or feedback..." className="mt-5 min-h-28 w-full rounded-lg border border-gray-300 px-4 py-3" />
-          <button type="button" onClick={postComment} className="mt-3 rounded-lg bg-green-600 px-5 py-3 font-bold text-white">Post to community</button>
+          <button type="button" onClick={postComment} className="mt-3 rounded-lg bg-green-600 px-5 py-3 font-bold text-white">Post note</button>
         </div>
       </div>
     </section>

@@ -22,13 +22,13 @@ const skillTracks = ["React", "Next.js", "TypeScript", "Node.js", "Python", "Dja
 const routeCards = [
   { title: "Jobs", href: "/jobs", body: "Browse open roles with full details upfront." },
   { title: "Talent", href: "/talent", body: "Discover technical profiles with portfolios and proof of work." },
-  { title: "Career roadmap", href: "/career-roadmap", body: "Plan your next move from beginner to specialist." },
+  { title: "Career roadmap", href: "/career-roadmap", body: "Plan the skills, projects, and evidence for your next role." },
   { title: "Skill tracks", href: "/skill-tracks", body: "Compare frontend, backend, cloud, security, data, QA, product, and design paths." },
   { title: "Post a role", href: "/employer/jobs/create", body: "Publish a new opening for your hiring team." },
   { title: "Hiring process", href: "/hiring-process", body: "Build a structured journey from role definition to decision." },
   { title: "Applications", href: "/employer/applications", body: "Review job seekers against the role brief, portfolio evidence, and practical constraints." },
   { title: "My applications", href: "/talent/applications", body: "Stay prepared for interviews, follow-ups, and decisions on roles you have applied for." },
-  { title: "Community", href: "/community", body: "Get referrals and feedback from the network." },
+  { title: "Community", href: "/community", body: "Request portfolio feedback, interview practice, or referrals." },
   { title: "Career resources", href: "/stories", body: "Read practical guidance on careers, hiring, portfolios, and interviews." },
   { title: "Support", href: "/support", body: "Get help with accounts, profiles, jobs, and applications." },
 ];
@@ -53,8 +53,8 @@ export default function PublicHome({ talent, users, jobs }: { talent: TalentProf
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 lg:grid-cols-[1.02fr_0.98fr] lg:px-8 lg:py-16">
           <div className="flex flex-col justify-center">
             <p className="w-fit rounded-full bg-green-50 px-3 py-1 text-sm font-bold uppercase text-green-700">Technology recruitment agency</p>
-            <h1 className="mt-5 max-w-3xl text-4xl font-black leading-tight md:text-6xl">Find your next hire. Land your next role.</h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-gray-600">Find practical technology roles and credible technical talent across software engineering, data, cloud, security, product, QA, and design. Clear briefs, proof-led profiles, and structured review help both sides make better hiring decisions.</p>
+            <h1 className="mt-5 max-w-3xl text-4xl font-black leading-tight md:text-6xl">Technology hiring with clear evidence.</h1>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-gray-600">Browse technology roles and technical talent across engineering, data, cloud, security, product, QA, and design. Role briefs and portfolio-led profiles provide the context needed to assess fit.</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/jobs" className="rounded-lg bg-green-600 px-5 py-3 font-bold text-white shadow-sm hover:bg-green-700">Browse jobs</Link>
               <Link href="/talent" className="rounded-lg border border-gray-300 px-5 py-3 font-bold text-gray-800 hover:bg-gray-50">Browse talent</Link>
@@ -86,7 +86,7 @@ export default function PublicHome({ talent, users, jobs }: { talent: TalentProf
             <Link href="/signup" className="w-fit rounded-lg bg-gray-950 px-5 py-3 font-bold text-white shadow-sm">Create account</Link>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {routeCards.map((card) => <Link key={card.href} href={card.href} className="group rounded-lg border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-green-300 hover:bg-white hover:shadow-lg hover:ring-2 hover:ring-green-100"><h3 className="text-lg font-black text-gray-900 group-hover:text-green-700">{card.title}</h3><p className="mt-2 text-sm leading-6 text-gray-600">{card.body}</p><p className="mt-4 text-sm font-black text-green-600 transition group-hover:translate-x-1">Open</p></Link>)}
+            {routeCards.map((card) => <Link key={card.href} href={card.href} className="group rounded-lg border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-green-300 hover:bg-white hover:shadow-lg hover:ring-2 hover:ring-green-100"><h3 className="text-lg font-black text-gray-900 group-hover:text-green-700">{card.title}</h3><p className="mt-2 text-sm leading-6 text-gray-600">{card.body}</p><p className="mt-4 text-sm font-black text-green-600 transition group-hover:translate-x-1">View {card.title.toLowerCase()}</p></Link>)}
           </div>
         </div>
       </section>
@@ -99,7 +99,7 @@ export default function PublicHome({ talent, users, jobs }: { talent: TalentProf
       <section className="lazy-section border-y border-gray-200 bg-gradient-to-b from-white via-gray-50 to-white">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 lg:grid-cols-2 lg:px-8">
           <LazyVideo src="/assets/developer-coding-office.mp4" poster="/assets/developer-code-office.jpg" label="Developer coding at a workstation" controls className="h-full max-h-[520px] min-h-80 w-full overflow-hidden rounded-lg shadow-xl transition duration-300 hover:shadow-2xl" />
-          <div className="flex flex-col justify-center"><p className="text-sm font-bold uppercase text-green-700">Profiles with proof</p><h2 className="mt-2 text-3xl font-black md:text-4xl">Real portfolios. Real experience.</h2><p className="mt-4 leading-7 text-gray-600">Strong technical profiles make capability visible through skills, portfolio links, project summaries, location, and availability. Hiring teams see fit before asking for a job seeker&apos;s time.</p><div className="mt-7 grid gap-4 sm:grid-cols-2"><Link href="/signup?role=talent" className="rounded-lg bg-green-600 px-5 py-4 text-center font-bold text-white shadow-sm transition duration-200 hover:bg-green-700 hover:shadow-lg hover:-translate-y-0.5">Create profile</Link><Link href="/signup?role=employer" className="rounded-lg bg-gray-950 px-5 py-4 text-center font-bold text-white shadow-sm transition duration-200 hover:bg-gray-800 hover:shadow-lg hover:-translate-y-0.5">Start hiring</Link></div></div>
+          <div className="flex flex-col justify-center"><p className="text-sm font-bold uppercase text-green-700">Portfolio-led profiles</p><h2 className="mt-2 text-3xl font-black md:text-4xl">Give hiring teams useful context</h2><p className="mt-4 leading-7 text-gray-600">Technical profiles can include skills, portfolio links, project summaries, location, and availability so employers can review relevant evidence before reaching out.</p><div className="mt-7 grid gap-4 sm:grid-cols-2"><Link href="/signup?role=talent" className="rounded-lg bg-green-600 px-5 py-4 text-center font-bold text-white shadow-sm transition duration-200 hover:bg-green-700 hover:shadow-lg hover:-translate-y-0.5">Create a profile</Link><Link href="/signup?role=employer" className="rounded-lg bg-gray-950 px-5 py-4 text-center font-bold text-white shadow-sm transition duration-200 hover:bg-gray-800 hover:shadow-lg hover:-translate-y-0.5">Create an employer account</Link></div></div>
         </div>
       </section>
       <section className="lazy-section mx-auto max-w-7xl px-4 py-14 lg:px-8">
@@ -132,7 +132,7 @@ export default function PublicHome({ talent, users, jobs }: { talent: TalentProf
               { title: "For job seekers", href: "/talent/applications", body: "Keep your applications organized so you can prepare for interviews, follow-ups, and decisions." },
               { title: "For new hiring teams", href: "/signup?role=employer", body: "Create an employer account before posting roles or reviewing job seeker activity." },
               { title: "For privacy questions", href: "/support", body: "Get help with account access, job seeker data, and application workflow questions." },
-            ].map((item) => <Link key={item.href} href={item.href} className="rounded-lg border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-green-300 hover:bg-white hover:shadow-lg"><h3 className="text-xl font-black leading-snug text-gray-900">{item.title}</h3><p className="mt-2 text-sm leading-6 text-gray-600">{item.body}</p><p className="mt-4 text-sm font-bold text-green-700">Continue</p></Link>)}
+            ].map((item) => <Link key={item.href} href={item.href} className="rounded-lg border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-green-300 hover:bg-white hover:shadow-lg"><h3 className="text-xl font-black leading-snug text-gray-900">{item.title}</h3><p className="mt-2 text-sm leading-6 text-gray-600">{item.body}</p><p className="mt-4 text-sm font-bold text-green-700">View details</p></Link>)}
           </div>
         </div>
       </section>

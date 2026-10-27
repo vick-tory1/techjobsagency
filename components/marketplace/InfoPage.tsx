@@ -57,9 +57,9 @@ export default function InfoPage({ content }: { content: InfoPageContent }) {
       <section className="border-y border-gray-200 bg-gray-950 text-white">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 lg:grid-cols-[0.88fr_1.12fr] lg:px-8">
           <div className="flex flex-col justify-center">
-            <p className="text-sm font-bold uppercase text-green-400">Work in motion</p>
-            <h2 className="mt-2 text-3xl font-black md:text-4xl">Turn guidance into visible progress</h2>
-            <p className="mt-4 leading-7 text-gray-300">A useful plan connects the next action, the evidence behind it, and the conversation it prepares you for. Keep each step practical enough to complete and clear enough to discuss.</p>
+            <p className="text-sm font-bold uppercase text-green-400">Put the guidance to work</p>
+            <h2 className="mt-2 text-3xl font-black md:text-4xl">Connect skills, evidence, and decisions</h2>
+            <p className="mt-4 leading-7 text-gray-300">Choose a practical next step, document the evidence it produces, and use it in the relevant hiring conversation.</p>
           </div>
           <div className="motion-panel" aria-label="Animated workflow visualization">
             <span className="motion-node motion-node-a" />

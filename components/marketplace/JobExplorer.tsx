@@ -16,7 +16,7 @@ export default function JobExplorer({ jobs }: { jobs: Job[] }) {
       <div className="mb-6 flex flex-col justify-between gap-3 md:flex-row md:items-end">
         <div>
           <p className="text-sm font-bold uppercase text-green-700">Open roles</p>
-          <h2 className="mt-2 text-3xl font-black">Browse {jobs.length} roles hiring technical talent</h2>
+          <h2 className="mt-2 text-3xl font-black">{jobs.length} open technology role{jobs.length === 1 ? "" : "s"}</h2>
         </div>
         <p className="max-w-xl text-sm leading-6 text-gray-600">Use the filters to find roles that match your stack, location, seniority, and work style before you spend time applying.</p>
       </div>
@@ -32,7 +32,7 @@ export default function JobExplorer({ jobs }: { jobs: Job[] }) {
         {!filtered.length && (
           <div className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center">
             <h3 className="text-xl font-black text-gray-900">No jobs currently match these filters.</h3>
-            <p className="mt-2 text-gray-600">Try a broader search or check back when employers publish new roles.</p>
+            <p className="mt-2 text-gray-600">Try a broader search, remove a filter, or check back when new roles are published.</p>
           </div>
         )}
         {filtered.map((job) => (
@@ -43,7 +43,7 @@ export default function JobExplorer({ jobs }: { jobs: Job[] }) {
                 <p className="mt-1 text-gray-600">{job.company} - {job.location}</p>
                 <p className="mt-3 max-w-3xl leading-7 text-gray-600">{job.description}</p>
               </div>
-              <a href={`/jobs/${job.id}`} className="rounded-lg bg-gray-950 px-5 py-3 text-center font-bold text-white">Read the role</a>
+              <a href={`/jobs/${job.id}`} className="rounded-lg bg-gray-950 px-5 py-3 text-center font-bold text-white">View job details</a>
             </div>
             <div className="mt-4 flex flex-wrap gap-2 text-sm">
               {job.skills.map((skill) => <span key={skill} className="rounded-full bg-green-100 px-3 py-1 text-green-800">{skill}</span>)}

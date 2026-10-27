@@ -35,7 +35,7 @@ export function GuideGrid({ eyebrow, title, intro, items }: { eyebrow: string; t
       </div>
       <div className="grid gap-5 md:grid-cols-3">
         {items.map((item) => {
-          const body = <><h3 className="text-xl font-black text-gray-900">{item.title}</h3><p className="mt-3 leading-7 text-gray-600">{item.body}</p>{item.href ? <p className="mt-4 text-sm font-bold text-green-700">Open resource</p> : null}</>;
+          const body = <><h3 className="text-xl font-black text-gray-900">{item.title}</h3><p className="mt-3 leading-7 text-gray-600">{item.body}</p>{item.href ? <p className="mt-4 text-sm font-bold text-green-700">View details</p> : null}</>;
           return item.href ? <Link key={item.title} href={item.href} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-green-300 hover:shadow-lg">{body}</Link> : <article key={item.title} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">{body}</article>;
         })}
       </div>

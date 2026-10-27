@@ -39,8 +39,8 @@ function authContent(role: AuthRole, isSignup: boolean): AuthContent {
   const content: Record<string, AuthContent> = {
     "talent-signup": {
       eyebrow: "Job Seeker account",
-      title: "Create Job Seeker Account",
-      body: "Create a focused profile that gives hiring teams the context to understand your skills, portfolio, and next move.",
+      title: "Create a job seeker account",
+      body: "Create a profile with the skills and portfolio links employers need to assess your experience.",
       nameLabel: "Your full name",
       emailLabel: "Personal email address",
       extraLabel: "Primary technical skill",
@@ -48,9 +48,9 @@ function authContent(role: AuthRole, isSignup: boolean): AuthContent {
       proofTitle: "What hiring teams will see",
       proof:
         "Your headline skill, LinkedIn, portfolio, and the work you choose to make visible. Your application history stays private.",
-      sideTitle: "Make your experience easy for employers to understand.",
+      sideTitle: "Make your technical experience easy to review.",
       sideBody:
-        "A complete profile helps the Flowpilot team and employers understand where your experience fits before the first conversation.",
+        "Add the skills, portfolio links, and work examples that best represent your experience.",
       media: {
         type: "image",
         src: "/assets/portfolio-code-review.jpg",
@@ -65,8 +65,8 @@ function authContent(role: AuthRole, isSignup: boolean): AuthContent {
 
     "talent-login": {
       eyebrow: "Job Seeker account",
-      title: "Job Seeker Sign In",
-      body: "Return to the roles, applications, and profile details that keep your next move on track.",
+      title: "Sign in to your job seeker account",
+      body: "Manage your profile and review your applications and saved job-search details.",
       nameLabel: "Your full name",
       emailLabel: "Job seeker email address",
       extraLabel: "Primary technical skill",
@@ -74,9 +74,9 @@ function authContent(role: AuthRole, isSignup: boolean): AuthContent {
       proofTitle: "Your job search workspace",
       proof:
         "Review applications, keep your profile current, and arrive prepared for each employer conversation.",
-      sideTitle: "Keep your job search moving with purpose.",
+      sideTitle: "Manage your job search in one place.",
       sideBody:
-        "Return to the applications, opportunities, and profile details that help you make a well-informed next move.",
+        "Review applications, profile information, and roles relevant to your technical background.",
       media: {
         type: "gif",
         src: "/assets/job-seeker-tech.gif",
@@ -91,7 +91,7 @@ function authContent(role: AuthRole, isSignup: boolean): AuthContent {
 
     "employer-signup": {
       eyebrow: "Employer account",
-      title: "Create Employer Account",
+      title: "Create an employer account",
       body: "Set up your company account to publish role briefs, review job seeker evidence, and keep every decision in context.",
       nameLabel: "Your name",
       emailLabel: "Company email address",
@@ -100,9 +100,9 @@ function authContent(role: AuthRole, isSignup: boolean): AuthContent {
       proofTitle: "What your team can do",
       proof:
         "Create clear role briefs, compare talent against the work, and move applications through a shared hiring workflow.",
-      sideTitle: "Start hiring with a brief people can trust.",
+      sideTitle: "Start with a clear role brief.",
       sideBody:
-        "A clear role brief helps Flowpilot connect your team with job seekers who understand the opportunity and its expectations.",
+        "Describe the work, requirements, and constraints so candidates can assess fit before applying.",
       media: {
         type: "video",
         src: "/assets/team-tech-meeting.mp4",
@@ -118,8 +118,8 @@ function authContent(role: AuthRole, isSignup: boolean): AuthContent {
 
     "employer-login": {
       eyebrow: "Employer account",
-      title: "Employer Sign In",
-      body: "Pick up open roles, job seeker reviews, and hiring decisions without losing the thread of your search.",
+      title: "Sign in to your employer account",
+      body: "Manage job listings, review applications, and keep hiring decisions tied to each role.",
       nameLabel: "Your name",
       emailLabel: "Company email address",
       extraLabel: "Company or client name",
@@ -127,9 +127,9 @@ function authContent(role: AuthRole, isSignup: boolean): AuthContent {
       proofTitle: "Your hiring workspace",
       proof:
         "See the roles you are running, compare job seekers against the brief, and keep reviews moving with your team.",
-      sideTitle: "Hiring decisions are easier when the evidence is close.",
+      sideTitle: "Keep role requirements and candidate evidence together.",
       sideBody:
-        "Come back to a workspace built around the role, the job seeker, and the decision your team needs to make.",
+        "Review applications against the role brief and the evidence candidates provide.",
       media: {
         type: "image",
         src: "/assets/employer-login.jpg",

@@ -16,9 +16,9 @@ const SupportChat = dynamic(() => import("../../components/marketplace/SupportCh
 });
 
 const supportTopics = [
-  { title: "Account access", body: "Login problems, password issues, Google signup problems, and profile access help." },
-  { title: "Jobs and applications", body: "Find the right role, review details, apply clearly, and understand your next step." },
-  { title: "Profiles and hiring", body: "Keep your skills, portfolio, and availability up to date for better matches and more interviews." },
+  { title: "Account access", body: "Help with sign-in, passwords, Google authentication, and profile access." },
+  { title: "Jobs and applications", body: "Help with job details, applications, and application status." },
+  { title: "Profiles and hiring", body: "Help with profile details, portfolio links, availability, and employer workflows." },
 ];
 
 const faqItems = faqData as Array<{ category: string; question: string; answer: string }>;
@@ -38,8 +38,8 @@ export default async function SupportPage() {
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
           <div className="flex flex-col justify-center">
             <p className="text-sm font-bold uppercase text-green-700">Help & support</p>
-            <h1 className="mt-2 text-4xl font-black md:text-6xl">Support that actually helps.</h1>
-            <p className="mt-5 leading-8 text-gray-600">Whether you need help logging in, reviewing a role, updating your profile, or managing hiring work, we can help you move faster.</p>
+            <h1 className="mt-2 text-4xl font-black md:text-6xl">Support for accounts, hiring, and applications</h1>
+            <p className="mt-5 leading-8 text-gray-600">Get help with sign-in, job details, applications, profiles, and employer workflows.</p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link href="#support-chat" className="rounded-lg bg-green-600 px-5 py-3 font-bold text-white">Open chat</Link>
               <Link href="/community" className="rounded-lg border border-gray-300 px-5 py-3 font-bold text-gray-800">Ask the community</Link>
@@ -55,26 +55,26 @@ export default async function SupportPage() {
       </section>
       <VisualBand
         eyebrow="Resolution paths"
-        title="Get the right help for the work you are trying to finish"
-        body="Hiring work touches accounts, profiles, jobs, applications, and private data. Start with the issue type so the next action is clear and your request includes the details support needs."
+        title="Provide the details needed to investigate"
+        body="Include the affected account, job, profile, or application so the issue can be understood in context. Do not send passwords or other secrets."
         image="/assets/support-operations-desk.jpg"
         imageAlt="Support team managing account and marketplace requests"
         points={["Account issue: include the affected email address.", "Job issue: include the role title and company name.", "Profile issue: include the profile or portfolio field involved.", "Application issue: include the job title and current status shown."]}
       />
       <FAQ items={faqItems} />
-      <ProcessGrid eyebrow="Support process" title="Move from issue to resolution faster" intro="Clear requests help support understand whether the problem is account access, job details, profile visibility, privacy, or application progress." steps={[{ title: "Name the area", body: "Tell us whether the issue involves jobs, talent profiles, employer applications, dashboard access, admin access, or login." }, { title: "Share the context", body: "Include the account email, role name, profile link, or application involved without sending passwords or sensitive secrets." }, { title: "Use the right account", body: "Sign in with the job seeker or employer account connected to the private application or profile details." }]} />
+      <ProcessGrid eyebrow="Support process" title="Report an issue with context" intro="Identify the affected area and include the information needed to review it safely." steps={[{ title: "Identify the affected area", body: "Specify whether the issue concerns sign-in, jobs, talent profiles, applications, dashboard access, or admin access." }, { title: "Include relevant context", body: "Share the account email, job title, profile link, or application involved. Do not send passwords or secrets." }, { title: "Use the linked account", body: "Sign in with the job seeker or employer account connected to the private profile or application." }]} />
       <section className="mx-auto grid max-w-7xl gap-6 px-4 pb-14 lg:grid-cols-[1.05fr_0.95fr] lg:px-8">
         <div id="support-chat"><SupportChat userName={user?.name ?? ""} /></div>
         <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
           <p className="text-sm font-bold uppercase text-green-700">Get in touch</p>
-          <h2 className="mt-2 text-3xl font-black">Direct contact</h2>
-          <p className="mt-4 leading-7 text-gray-600">Choose the help path that matches the problem so support can review the right account, role, profile, or application context.</p>
+          <h2 className="mt-2 text-3xl font-black">Support areas</h2>
+          <p className="mt-4 leading-7 text-gray-600">Choose the area related to your issue to review the relevant account, job, profile, or application context.</p>
           <div className="mt-6 grid gap-3">
             {contactLinks.map((link) => <Link key={link.label} href={link.href} className="rounded-lg border border-gray-200 p-4 hover:border-green-200 hover:bg-green-50"><p className="font-black">{link.label}</p><p className="mt-1 text-sm text-gray-600">{link.value}</p></Link>)}
           </div>
         </div>
       </section>
-      <CTASection title="Need help while hiring or applying?" body="Use the support chat for immediate guidance, then continue from the account area connected to your role or application." primary={{ label: "Open chat", href: "#support-chat" }} secondary={{ label: "Go to dashboard", href: "/dashboard" }} />
+      <CTASection title="Need help with an account or application?" body="Use support chat for guidance, then return to the account area associated with the job or application." primary={{ label: "Open support chat", href: "#support-chat" }} secondary={{ label: "Open dashboard", href: "/dashboard" }} />
     </PublicChrome>
   );
 }
