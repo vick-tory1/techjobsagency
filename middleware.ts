@@ -1,28 +1,81 @@
+
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const protectedRoutes = ["/dashboard", "/admin", "/employer", "/talent/profile", "/talent/applications", "/student"];
+const authSecret =
+  process.env.AUTH_SECRET ??
+  "flowpilot-local-development-secret-change-before-production";
+
+const protectedRoutes = [
+  "/dashboard",
+  "/admin",
+  "/employer",
+  "/talent/profile",
+  "/talent/applications",
+  "/student",
+];
+
+function usesSecureAuthCookies(request: NextRequest) {
+  const authUrl = process.env.AUTH_URL ?? process.env.NEXTAUTH_URL;
+
+  return authUrl
+    ? new URL(authUrl).protocol === "https:"
+    : request.nextUrl.protocol === "https:";
+}
 
 export async function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith("/admin/login")) return NextResponse.next();
+  const { pathname } = request.nextUrl;
 
-  const route = protectedRoutes.find((prefix) => request.nextUrl.pathname.startsWith(prefix));
-  if (!route) return NextResponse.next();
+  if (
+    pathname === "/admin/login" ||
+    pathname.startsWith("/admin/login/")
+  ) {
+    return NextResponse.next();
+  }
+
+  const isProtected = protectedRoutes.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+
+  if (!isProtected) return NextResponse.next();
 
   let token = null;
+
   try {
-    token = await getToken({ req: request, secret: process.env.AUTH_SECRET || "flowpilot-local-development-secret-change-before-production" });
+    token = await getToken({
+      req: request,
+      secret: authSecret,
+      secureCookie: usesSecureAuthCookies(request),
+    });
   } catch {
-    // A token encrypted with a previous secret is not a valid session.
     token = null;
   }
-  if (!token || typeof token.exp !== "number" || token.exp * 1000 <= Date.now()) {
-    const loginPath = request.nextUrl.pathname.startsWith("/admin") ? "/admin/login" : "/login";
-    return NextResponse.redirect(new URL(`${loginPath}?callbackUrl=${encodeURIComponent(request.nextUrl.pathname)}`, request.url));
+
+  if (
+    !token ||
+    typeof token.exp !== "number" ||
+    token.exp * 1000 <= Date.now()
+  ) {
+    const loginPath = pathname.startsWith("/admin")
+      ? "/admin/login"
+      : "/login";
+
+    const url = new URL(loginPath, request.url);
+    url.searchParams.set("callbackUrl", pathname);
+
+    return NextResponse.redirect(url);
   }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*", "/employer/:path*", "/talent/profile/:path*", "/talent/applications/:path*", "/student/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/admin/:path*",
+    "/employer/:path*",
+    "/talent/profile/:path*",
+    "/talent/applications/:path*",
+    "/student/:path*",
+  ],
 };
